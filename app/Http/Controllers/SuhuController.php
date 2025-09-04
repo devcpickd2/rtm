@@ -96,6 +96,9 @@ class SuhuController extends Controller
     {
         $suhu = Suhu::findOrFail($uuid);
 
+        $username_updated = session('username_updated', 'Harnis');
+        $nama_produksi = session('nama_produksi', 'Produksi RTM');
+
         $request->validate([
             'date'  => 'required|date',
             'pukul' => 'required',

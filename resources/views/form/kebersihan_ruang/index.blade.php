@@ -99,25 +99,72 @@
                             <td class="text-center">{!! checkIcon($dep->iqf ?? []) !!}</td>
                             <td class="text-center">{!! checkIcon($dep->cs_fg ?? []) !!}</td>
                             <td class="text-center">{!! checkIcon($dep->ds ?? []) !!}</td>
-                            <td>
+                            <td class="text-center align-middle">
                                 @if ($dep->status_produksi == 0)
-                                <span style="font-weight: bold;" class="text-secondary">Created</span>
+                                <span class="fw-bold text-secondary">Created</span>
                                 @elseif ($dep->status_produksi == 1)
-                                <span style="font-weight: bold;" class="text-success">Checked</span>
-                                @elseif ($dep->status_produksi == 2)
-                                <span style="font-weight: bold;" class="text-danger">Recheck</span>
-                                @endif
-                            </td>
+                                <!-- Link buka modal -->
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#checkedModal{{ $dep->uuid }}" 
+                                    class="fw-bold text-success text-decoration-none" style="cursor: pointer; font-weight: bold;">Checked</a>
 
-                            <td>
-                                @if ($dep->status_spv == 0)
-                                <span style="font-weight: bold;" class="text-secondary">Created</span>
-                                @elseif ($dep->status_spv == 1)
-                                <span style="font-weight: bold;" class="text-success">Verified</span>
-                                @elseif ($dep->status_spv == 2)
-                                <span style="font-weight: bold;" class="text-danger">Revision</span>
-                                @endif
-                            </td>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="checkedModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="checkedModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-success text-white">
+                                                    <h5 class="modal-title" id="checkedModalLabel{{ $dep->uuid }}">Detail Checked</h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <ul class="list-unstyled mb-0">
+                                                        <li><strong>Status:</strong> Checked</li>
+                                                        <li><strong>Nama Produksi:</strong> {{ $dep->nama_produksi ?? '-' }}</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @elseif ($dep->status_produksi == 2)
+                                    <span class="fw-bold text-danger">Recheck</span>
+                                    @endif
+                                </td>
+
+                                <td class="text-center align-middle">
+                                    @if ($dep->status_spv == 0)
+                                    <span class="fw-bold text-secondary">Created</span>
+                                    @elseif ($dep->status_spv == 1)
+                                    <span class="fw-bold text-success">Verified</span>
+                                    @elseif ($dep->status_spv == 2)
+                                    <!-- Link buka modal -->
+                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#revisionModal{{ $dep->uuid }}" 
+                                     class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
+
+                                     <!-- Modal -->
+                                     <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title" id="revisionModalLabel{{ $dep->uuid }}">Detail Revisi</h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <ul class="list-unstyled mb-0">
+                                                        <li><strong>Status:</strong> Revision</li>
+                                                        <li><strong>Catatan:</strong> {{ $dep->catatan_spv ?? '-' }}</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
+                                </td>
+
                             <td class="text-center">
                                 <a href="{{ route('kebersihan_ruang.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
                                     <i class="bi bi-pencil"></i> Edit

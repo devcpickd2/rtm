@@ -19,7 +19,7 @@
                             <div class="col-md-6">
                                 <label class="form-label">Tanggal Produksi</label>
                                 <input type="date" id="dateInput" name="date" class="form-control" 
-                                    value="{{ old('date', $yoshinoya->date) }}" required>
+                                value="{{ old('date', $yoshinoya->date) }}" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Shift</label>
@@ -52,29 +52,59 @@
                             <div class="col-md-6">
                                 <label class="form-label">Kode Produksi</label>
                                 <input type="text" id="kode_produksi" name="kode_produksi" class="form-control" 
-                                    value="{{ old('kode_produksi', $yoshinoya->kode_produksi) }}" required>
+                                value="{{ old('kode_produksi', $yoshinoya->kode_produksi) }}" required>
                             </div>
                         </div>
-
-                        {{-- Notes Standar --}}
-                        <div class="alert alert-warning mt-2 py-2 px-3" style="font-size: 0.9rem;">
-                            <i class="bi bi-info-circle"></i>
-                            <strong>Standar:</strong>  
-                            <ul class="mb-0 ps-3">
-                                <li>Suhu pengukuran: 24 - 26°C</li>
-                            </ul>
-                        </div>
-
+                        
                         {{-- Notes Vegetable --}}
                         <div class="alert alert-warning mt-2 py-2 px-3 note" id="note-vegetable-basic" style="font-size: 0.9rem; display:none;">
                             <i class="bi bi-info-circle"></i>
                             <strong>Vegetable:</strong>  
                             <ul class="mb-0 ps-3">
+                                <li>Suhu pengukuran: 24 - 26°C</li>
                                 <li>Brix: 6 - 12%</li>
                                 <li>Salt: 6 - 12%</li>
                                 <li>Viscositas: 20 - 50 detik.milidetik</li>
                             </ul>
                         </div>
+
+                        {{-- Notes Yoshinoya --}}
+                        <div class="alert alert-warning mt-2 py-2 px-3 note" id="note-yoshinoya-basic" style="font-size: 0.9rem; display:none;">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Yoshinoya:</strong>  
+                            <ul class="mb-0 ps-3">
+                                <li>Suhu pengukuran: 24 - 26°C</li>
+                                <li>Brix: 33 - 38%</li>
+                                <li>Salt: 14 - 17%</li>
+                                <li>Viscositas: 70 - 130 detik.milidetik</li>
+                            </ul>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Suhu Pengukuran (°C)</label>
+                                <input type="text" id="suhu_pengukuran" name="suhu_pengukuran" class="form-control" 
+                                value="{{ old('suhu_pengukuran', $yoshinoya->suhu_pengukuran) }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Brix (%)</label>
+                                <input type="text" id="brix" name="brix" class="form-control" 
+                                value="{{ old('brix', $yoshinoya->brix) }}" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Salt (%)</label>
+                                <input type="text" id="salt" name="salt" class="form-control" 
+                                value="{{ old('salt', $yoshinoya->salt) }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Viscositas (detik.milidetik)</label>
+                                <input type="text" id="visco" name="visco" class="form-control" 
+                                value="{{ old('visco', $yoshinoya->visco) }}" required>
+                            </div>
+                        </div>
+
                         <div class="alert alert-warning mt-2 py-2 px-3 note" id="note-vegetable-brookfield" style="font-size: 0.9rem; display:none;">
                             <i class="bi bi-info-circle"></i>
                             <strong>Vegetable:</strong>  
@@ -84,16 +114,6 @@
                             </ul>
                         </div>
 
-                        {{-- Notes Yoshinoya --}}
-                        <div class="alert alert-warning mt-2 py-2 px-3 note" id="note-yoshinoya-basic" style="font-size: 0.9rem; display:none;">
-                            <i class="bi bi-info-circle"></i>
-                            <strong>Yoshinoya:</strong>  
-                            <ul class="mb-0 ps-3">
-                                <li>Brix: 33 - 38%</li>
-                                <li>Salt: 14 - 17%</li>
-                                <li>Viscositas: 70 - 130 detik.milidetik</li>
-                            </ul>
-                        </div>
                         <div class="alert alert-warning mt-2 py-2 px-3 note" id="note-yoshinoya-brookfield" style="font-size: 0.9rem; display:none;">
                             <i class="bi bi-info-circle"></i>
                             <strong>Yoshinoya:</strong>  
@@ -102,41 +122,16 @@
                                 <li>Brookfield LV, S 64,. 30% RPM (Setelah Frozen) suhu saus 24 - 26°C: 2500 - 3000 Cp</li>
                             </ul>
                         </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Suhu Pengukuran (°C)</label>
-                                <input type="text" id="suhu_pengukuran" name="suhu_pengukuran" class="form-control" 
-                                    value="{{ old('suhu_pengukuran', $yoshinoya->suhu_pengukuran) }}" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Brix (%)</label>
-                                <input type="text" id="brix" name="brix" class="form-control" 
-                                    value="{{ old('brix', $yoshinoya->brix) }}" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Salt (%)</label>
-                                <input type="text" id="salt" name="salt" class="form-control" 
-                                    value="{{ old('salt', $yoshinoya->salt) }}" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Viscositas (detik.milidetik)</label>
-                                <input type="text" id="visco" name="visco" class="form-control" 
-                                    value="{{ old('visco', $yoshinoya->visco) }}" required>
-                            </div>
-                        </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Brookfield LV, S 64,. 30% RPM suhu saus 24 - 26°C</label>
                                 <input type="text" id="brookfield_sebelum" name="brookfield_sebelum" class="form-control" 
-                                    value="{{ old('brookfield_sebelum', $yoshinoya->brookfield_sebelum) }}" required>
+                                value="{{ old('brookfield_sebelum', $yoshinoya->brookfield_sebelum) }}" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Brookfield LV, S 64,. 30% RPM (Setelah Frozen) suhu saus 24 - 26°C</label>
                                 <input type="text" id="brookfield_frozen" name="brookfield_frozen" class="form-control" 
-                                    value="{{ old('brookfield_frozen', $yoshinoya->brookfield_frozen) }}" required>
+                                value="{{ old('brookfield_frozen', $yoshinoya->brookfield_frozen) }}" required>
                             </div>
                         </div>
                     </div>

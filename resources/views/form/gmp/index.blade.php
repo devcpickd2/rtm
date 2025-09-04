@@ -31,7 +31,7 @@
                 </div>
                 <div class="col-md-3">
                     <input type="text" name="search" class="form-control"
-                    value="{{ request('search') }}" placeholder="Cari shift/catatan...">
+                    value="{{ request('search') }}" placeholder="Cari Nama...">
                 </div>
                 <div class="col-md-3 d-flex gap-2">
                     <button type="submit" class="btn btn-primary w-100">
@@ -151,83 +151,130 @@
                                     </small>
                                 </td>
                                 
-                                <td>
+                                <td class="text-center align-middle">
                                     @if ($dep->status_produksi == 0)
-                                    <span style="font-weight: bold;" class="text-secondary">Created</span>
+                                    <span class="fw-bold text-secondary">Created</span>
                                     @elseif ($dep->status_produksi == 1)
-                                    <span style="font-weight: bold;" class="text-success">Checked</span>
-                                    @elseif ($dep->status_produksi == 2)
-                                    <span style="font-weight: bold;" class="text-danger">Recheck</span>
-                                    @endif
-                                </td>
+                                    <!-- Link buka modal -->
+                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#checkedModal{{ $dep->uuid }}" 
+                                        class="fw-bold text-success text-decoration-none" style="cursor: pointer; font-weight: bold;">Checked</a>
 
-                                <td>
-                                    @if ($dep->status_spv == 0)
-                                    <span style="font-weight: bold;" class="text-secondary">Created</span>
-                                    @elseif ($dep->status_spv == 1)
-                                    <span style="font-weight: bold;" class="text-success">Verified</span>
-                                    @elseif ($dep->status_spv == 2)
-                                    <span style="font-weight: bold;" class="text-danger">Revision</span>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    <a href="{{ route('gmp.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </a>
-                                    <form action="{{ route('gmp.destroy', $dep->uuid) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Yakin ingin menghapus?')">
-                                        <i class="bi bi-trash"></i> Hapus
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="19" class="text-center">Belum ada data gmp karyawan.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="checkedModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="checkedModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-success text-white">
+                                                        <h5 class="modal-title" id="checkedModalLabel{{ $dep->uuid }}">Detail Checked</h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <ul class="list-unstyled mb-0">
+                                                            <li><strong>Status:</strong> Checked</li>
+                                                            <li><strong>Nama Produksi:</strong> {{ $dep->nama_produksi ?? '-' }}</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @elseif ($dep->status_produksi == 2)
+                                        <span class="fw-bold text-danger">Recheck</span>
+                                        @endif
+                                    </td>
 
-            {{-- Pagination --}}
-            <div class="mt-3">
-                {{ $data->withQueryString()->links('pagination::bootstrap-5') }}
+                                    <td class="text-center align-middle">
+                                        @if ($dep->status_spv == 0)
+                                        <span class="fw-bold text-secondary">Created</span>
+                                        @elseif ($dep->status_spv == 1)
+                                        <span class="fw-bold text-success">Verified</span>
+                                        @elseif ($dep->status_spv == 2)
+                                        <!-- Link buka modal -->
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#revisionModal{{ $dep->uuid }}" 
+                                           class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
+
+                                           <!-- Modal -->
+                                           <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5 class="modal-title" id="revisionModalLabel{{ $dep->uuid }}">Detail Revisi</h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <ul class="list-unstyled mb-0">
+                                                            <li><strong>Status:</strong> Revision</li>
+                                                            <li><strong>Catatan:</strong> {{ $dep->catatan_spv ?? '-' }}</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+                                    </td>
+
+                                    <td class="text-center">
+                                        <a href="{{ route('gmp.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
+                                            <i class="bi bi-pencil"></i> Edit
+                                        </a>
+                                        <form action="{{ route('gmp.destroy', $dep->uuid) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Yakin ingin menghapus?')">
+                                            <i class="bi bi-trash"></i> Hapus
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="19" class="text-center">Belum ada data gmp karyawan.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- Pagination --}}
+                <div class="mt-3">
+                    {{ $data->withQueryString()->links('pagination::bootstrap-5') }}
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-{{-- Auto-hide alert setelah 3 detik --}}
-<script>
-    setTimeout(() => {
-        const alert = document.querySelector('.alert');
-        if(alert){
-            alert.classList.remove('show');
-            alert.classList.add('fade');
+    {{-- Auto-hide alert setelah 3 detik --}}
+    <script>
+        setTimeout(() => {
+            const alert = document.querySelector('.alert');
+            if(alert){
+                alert.classList.remove('show');
+                alert.classList.add('fade');
+            }
+        }, 3000);
+    </script>
+
+    {{-- CSS tambahan agar tabel lebih rapi --}}
+    <style>
+        .table td, .table th {
+            font-size: 0.85rem;
+            white-space: nowrap; 
         }
-    }, 3000);
-</script>
-
-{{-- CSS tambahan agar tabel lebih rapi --}}
-<style>
-    .table td, .table th {
-        font-size: 0.85rem;
-        white-space: nowrap; 
-    }
-    .text-danger {
-        font-weight: bold;
-    }
-    .text-muted.fst-italic {
-        color: #6c757d !important;
-        font-style: italic !important;
-    }
-    .container {
-        padding-left: 2px !important;
-        padding-right: 2px !important;
-    }
-</style>
-@endsection
+        .text-danger {
+            font-weight: bold;
+        }
+        .text-muted.fst-italic {
+            color: #6c757d !important;
+            font-style: italic !important;
+        }
+        .container {
+            padding-left: 2px !important;
+            padding-right: 2px !important;
+        }
+    </style>
+    @endsection

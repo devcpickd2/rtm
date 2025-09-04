@@ -73,7 +73,7 @@
 
 
     @php
-    $formActiveCooking = request()->routeIs('premix.*') || request()->routeIs('institusi.*') || request()->routeIs('timbangan.*') || request()->routeIs('thermometer.*') || request()->routeIs('sortasi.*') || request()->routeIs('thawing.*') || request()->routeIs('yoshinoya.*') ;
+    $formActiveCooking = request()->routeIs('premix.*') || request()->routeIs('institusi.*') || request()->routeIs('timbangan.*') || request()->routeIs('thermometer.*') || request()->routeIs('sortasi.*') || request()->routeIs('thawing.*') || request()->routeIs('yoshinoya.*') || request()->routeIs('steamer.*') || request()->routeIs('rice.*') ;
     @endphp
     <li class="nav-item">
         <a class="nav-link {{ $formActiveCooking ? '' : 'collapsed' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseFormCooking" aria-expanded="{{ $formActiveCooking ? 'true' : 'false' }}" aria-controls="collapseFormCooking">
@@ -89,6 +89,8 @@
                 <a class="collapse-item text-white {{ request()->routeIs('sortasi.*') ? 'active' : '' }}" href="{{ route('sortasi.index') }}">Sortasi Bahan Baku yang Tidak Sesuai</a>
                 <a class="collapse-item text-white {{ request()->routeIs('thawing.*') ? 'active' : '' }}" href="{{ route('thawing.index') }}">Pemeriksaan Proses Thawing</a>
                 <a class="collapse-item text-white {{ request()->routeIs('yoshinoya.*') ? 'active' : '' }}" href="{{ route('yoshinoya.index') }}">Parameter Produk Saus Yoshinoya</a>
+                <a class="collapse-item text-white {{ request()->routeIs('steamer.*') ? 'active' : '' }}" href="{{ route('steamer.index') }}">Pemeriksaan Pemasakan dengan Steamer</a>
+                <a class="collapse-item text-white {{ request()->routeIs('rice.*') ? 'active' : '' }}" href="{{ route('rice.index') }}">Pemeriksaan Pemasakan dengan Rice Cooker</a>
             </div>
         </div>
     </li>
@@ -109,7 +111,7 @@
         width: 220px;
         min-width: 220px;
         max-width: 220px;
-        overflow-x: hidden; /* sembunyikan overflow horizontal */
+        overflow-x: hidden; 
         transition: width 0.3s;
     }
 

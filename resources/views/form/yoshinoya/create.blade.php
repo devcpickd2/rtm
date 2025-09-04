@@ -39,7 +39,7 @@
 
                     <div class="card-body">
                         <div class="row mb-3">
-                           <div class="col-md-6">
+                         <div class="col-md-6">
                             <label class="form-label">Jenis Saus</label>
                             <select id="saus" name="saus" class="form-control" required>
                                 <option value="" disabled selected>Pilih Saus</option>
@@ -53,20 +53,12 @@
                         </div>
                     </div>
 
-                    {{-- Notes --}}
-                    <div class="alert alert-warning mt-2 py-2 px-3" style="font-size: 0.9rem;">
-                        <i class="bi bi-info-circle"></i>
-                        <strong>Standar:</strong>  
-                        <ul class="mb-0 ps-3">
-                            <li>Suhu pengukuran: 24 - 26°C</li>
-                        </ul>
-                    </div>
-
                     {{-- Notes Vegetable --}}
                     <div class="alert alert-warning mt-2 py-2 px-3 note" id="note-vegetable-basic" style="font-size: 0.9rem; display:none;">
                         <i class="bi bi-info-circle"></i>
                         <strong>Vegetable:</strong>  
                         <ul class="mb-0 ps-3">
+                            <li>Suhu pengukuran: 24 - 26°C</li>
                             <li>Brix: 6 - 12%</li>
                             <li>Salt: 6 - 12%</li>
                             <li>Viscositas: 20 - 50 detik.milidetik</li>
@@ -78,6 +70,7 @@
                         <i class="bi bi-info-circle"></i>
                         <strong>Yoshinoya:</strong>  
                         <ul class="mb-0 ps-3">
+                            <li>Suhu pengukuran: 24 - 26°C</li>
                             <li>Brix: 33 - 38%</li>
                             <li>Salt: 14 - 17%</li>
                             <li>Viscositas: 70 - 130 detik.milidetik</li>

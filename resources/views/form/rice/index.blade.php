@@ -13,14 +13,14 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3><i class="bi bi-list-check"></i> Data Pemeriksaan Suhu Ruang</h3>
-                <a href="{{ route('suhu.create') }}" class="btn btn-success">
+                <h3><i class="bi bi-list-check"></i> Data Pemeriksaan Pemasakan dengan Rice Cooker</h3>
+                <a href="{{ route('rice.create') }}" class="btn btn-success">
                     <i class="bi bi-plus-circle"></i> Tambah
                 </a>
             </div>
 
             {{-- Filter dan Search --}}
-            <form method="GET" action="{{ route('suhu.index') }}" class="row g-2 mb-3">
+            <form method="GET" action="{{ route('rice.index') }}" class="row g-2 mb-3">
                 <div class="col-md-3">
                     <input type="date" name="start_date" class="form-control"
                     value="{{ request('start_date') }}" placeholder="Tanggal awal">
@@ -31,13 +31,13 @@
                 </div>
                 <div class="col-md-3">
                     <input type="text" name="search" class="form-control"
-                    value="{{ request('search') }}" placeholder="Cari shift/catatan...">
+                    value="{{ request('search') }}" placeholder="Cari Nama Produk/Kode Produksi...">
                 </div>
                 <div class="col-md-3 d-flex gap-2">
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-funnel"></i> Filter
                     </button>
-                    <a href="{{ route('suhu.index') }}" class="btn btn-secondary w-100">
+                    <a href="{{ route('rice.index') }}" class="btn btn-secondary w-100">
                         <i class="bi bi-x-circle"></i> Reset
                     </a>
                 </div>
@@ -50,22 +50,8 @@
                         <tr>
                             <th>NO.</th>
                             <th>Date | Shift</th>
-                            <th>Pukul</th>
-                            <th>Chillroom<br><small>(0–4 °C)</small></th>
-                            <th>Cold Stor.<br>1<br><small>(-22 – -18 °C)</small></th>
-                            <th>Cold Stor.<br>2<br><small>(-22 – -18 °C)</small></th>
-                            <th>Anteroom<br>RM<br><small>(8–10 °C)</small></th>
-                            <th>Seasoning<br><small>(22–30 °C / ≤75% RH)</small></th>
-                            <th>Prep.<br>Room<br><small>(9–15 °C)</small></th>
-                            <th>Cooking<br><small>(20–30 °C)</small></th>
-                            <th>Filling<br><small>(9–15 °C)</small></th>
-                            <th>Rice<br><small>(20–30 °C)</small></th>
-                            <th>Noodle<br><small>(20–30 °C)</small></th>
-                            <th>Topping<br><small>(9–15 °C)</small></th>
-                            <th>Packing<br><small>(9–15 °C)</small></th>
-                            <th>DS<br><small>(20–30 °C / ≤75% RH)</small></th>
-                            <th>Cold Stor.<br>FG<br><small>(-20 – -18 °C)</small></th>
-                            <th>Anteroom<br>FG<br><small>(0–10 °C)</small></th>
+                            <th>Nama Produk</th>
+                            <th>Rice Cooker</th>
                             <th>Produksi</th>
                             <th>SPV</th>
                             <th>Action</th>
@@ -74,50 +60,60 @@
                     <tbody>
                         @php 
                         $no = ($data->currentPage() - 1) * $data->perPage() + 1; 
-
                         @endphp
                         @forelse ($data as $dep)
                         <tr>
                             <td class="text-center">{{ $no++ }}</td>
-                            <td>{{ \Carbon\Carbon::parse($dep->date)->format('d-m-Y') }} | Shift: {{ $dep->shift }}</td>
-                            <td>{{ \Carbon\Carbon::parse($dep->pukul)->format('H:i') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($dep->date)->format('d-m-Y') }} | Shift: {{ $dep->shift }}</td>   
+                            <td>{{ $dep->nama_produk }}</td>
+                            <td class="text-center">
+                                @php
+                                $cooker = json_decode($dep->cooker, true);
+                                @endphp
 
-                            {{-- Chillroom 0-4 --}}
-                            <td class="{{ cekRange($dep->chillroom,0,4) }}">{{ $dep->chillroom ?? 'Belum dicek' }}</td>
-                            {{-- CS1 -22 s/d -18 --}}
-                            <td class="{{ cekRange($dep->cs_1,-22,-18) }}">{{ $dep->cs_1 ?? 'Belum dicek' }}</td>
-                            {{-- CS2 -22 s/d -18 --}}
-                            <td class="{{ cekRange($dep->cs_2,-22,-18) }}">{{ $dep->cs_2 ?? 'Belum dicek' }}</td>
-                            {{-- Anteroom RM 8-10 --}}
-                            <td class="{{ cekRange($dep->anteroom_rm,8,10) }}">{{ $dep->anteroom_rm ?? 'Belum dicek' }}</td>
-                            {{-- Seasoning Suhu 22-30 | RH <=75 --}}
-                            <td>
-                                <span class="{{ cekRange($dep->seasoning_suhu,22,30) }}">{{ $dep->seasoning_suhu ?? 'Belum dicek' }}</span> | 
-                                <span class="{{ cekRange($dep->seasoning_rh,0,75) }}">{{ $dep->seasoning_rh ?? 'Belum dicek' }}</span>
+                                @if(!empty($cooker))
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#cookerModal{{ $dep->uuid }}" style="font-weight: bold; text-decoration: underline;">
+                                    Hasil Pemasakan
+                                </a>
+                                <div class="modal fade" id="cookerModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="cookerModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                    <div class="modal-dialog" style="max-width: 500px;">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-info text-white">
+                                                <h5 class="modal-title text-start" id="cookerModalLabel{{ $dep->uuid }}">Detail Rice Cooker</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <ul class="list-group text-left">
+                                                    @foreach($cooker as $index => $item)
+                                                    <li class="list-group-item mb-2" style="border: 1px solid ; border-radius: 5px; padding: 10px;">
+                                                        <div style="border-bottom: 1px solid ; font-weight: bold; padding-bottom: 5px; margin-bottom: 5px;">
+                                                            Pemeriksaan {{ $index + 1 }}
+                                                        </div>
+                                                        <div><strong>Kode Berat:</strong> {{ $item['kode_beras'] ?? '-' }}</div>
+                                                        <div><strong>Berat:</strong> {{ $item['berat'] ?? '-' }} Kg</div>
+                                                        <div><strong>Kode Produksi:</strong> {{ $item['kode_produksi'] ?? '-' }}</div>
+                                                        <div><strong>Waktu Cooker:</strong> {{ $item['waktu_masak'] ?? '-' }} Menit</div>
+                                                        <div><strong>Suhu Produk:</strong> {{ $item['suhu_produk'] ?? '-' }}°C</div>
+                                                        <div><strong>Suhu Produk 1 Menit:</strong> {{ $item['suhu_after'] ?? '-' }}°C</div>
+                                                        <div><strong>Suhu After Vacuum:</strong> {{ $item['suhu_vacuum'] ?? '-' }}°C</div>
+                                                        <div><strong>Jam Mulai:</strong> {{ $item['jam_mulai'] ?? '-' }}</div>
+                                                        <div><strong>Jam Selesai:</strong> {{ $item['jam_selesai'] ?? '-' }}</div>
+                                                    </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @else
+                                <span>-</span>
+                                @endif
                             </td>
-                            {{-- Prep Room 9-15 --}}
-                            <td class="{{ cekRange($dep->prep_room,9,15) }}">{{ $dep->prep_room ?? 'Belum dicek' }}</td>
-                            {{-- Cooking 20-30 --}}
-                            <td class="{{ cekRange($dep->cooking,20,30) }}">{{ $dep->cooking ?? 'Belum dicek' }}</td>
-                            {{-- Filling 9-15 --}}
-                            <td class="{{ cekRange($dep->filling,9,15) }}">{{ $dep->filling ?? 'Belum dicek' }}</td>
-                            {{-- Rice 20-30 --}}
-                            <td class="{{ cekRange($dep->rice,20,30) }}">{{ $dep->rice ?? 'Belum dicek' }}</td>
-                            {{-- Noodle 20-30 --}}
-                            <td class="{{ cekRange($dep->noodle,20,30) }}">{{ $dep->noodle ?? 'Belum dicek' }}</td>
-                            {{-- Topping 9-15 --}}
-                            <td class="{{ cekRange($dep->topping,9,15) }}">{{ $dep->topping ?? 'Belum dicek' }}</td>
-                            {{-- Packing 9-15 --}}
-                            <td class="{{ cekRange($dep->packing,9,15) }}">{{ $dep->packing ?? 'Belum dicek' }}</td>
-                            {{-- DS Suhu 20-30 | RH <=75 --}}
-                            <td>
-                                <span class="{{ cekRange($dep->ds_suhu,20,30) }}">{{ $dep->ds_suhu ?? 'Belum dicek' }}</span> | 
-                                <span class="{{ cekRange($dep->ds_rh,0,75) }}">{{ $dep->ds_rh ?? 'Belum dicek' }}</span>
-                            </td>
-                            {{-- CS FG -20 s/d -18 --}}
-                            <td class="{{ cekRange($dep->cs_fg,-20,-18) }}">{{ $dep->cs_fg ?? 'Belum dicek' }}</td>
-                            {{-- Anteroom FG 0-10 --}}
-                            <td class="{{ cekRange($dep->anteroom_fg,0,10) }}">{{ $dep->anteroom_fg ?? 'Belum dicek' }}</td>
+
+
                             <td class="text-center align-middle">
                                 @if ($dep->status_produksi == 0)
                                 <span class="fw-bold text-secondary">Created</span>
@@ -184,11 +180,12 @@
                                     @endif
                                 </td>
 
+
                                 <td class="text-center">
-                                    <a href="{{ route('suhu.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
+                                    <a href="{{ route('rice.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
                                         <i class="bi bi-pencil"></i> Edit
                                     </a>
-                                    <form action="{{ route('suhu.destroy', $dep->uuid) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('rice.destroy', $dep->uuid) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm"
@@ -200,7 +197,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="19" class="text-center">Belum ada data suhu.</td>
+                            <td colspan="19" class="text-center">Belum ada data pemasakan nasi.</td>
                         </tr>
                         @endforelse
                     </tbody>
