@@ -20,7 +20,11 @@ use App\Http\Controllers\{
     YoshinoyaController,
     SteamerController,
     ThumblingController,
-    RiceController
+    RiceController,
+    NoodleController,
+    CookingController,
+    KontaminasiController,
+    XrayController
 };
 
 // Dashboard
@@ -122,4 +126,26 @@ Route::resource('thumbling', ThumblingController::class)->parameters([
 Route::resource('rice', RiceController::class)->parameters([
     'rice' => 'uuid'
 ]);
- 
+
+// Thumbling
+Route::resource('thumbling', ThumblingController::class);
+
+// Noodle
+Route::resource('noodle', NoodleController::class)->parameters([
+    'noodle' => 'uuid'
+]);
+
+// Cooking
+Route::resource('cooking', CookingController::class)->parameters([
+    'cooking' => 'uuid'
+]);
+
+// Kontaminasi
+Route::resource('kontaminasi', KontaminasiController::class)->parameters([
+    'kontaminasi' => 'uuid'
+]);
+
+// XRay
+Route::resource('xray', XrayController::class)->parameters([
+    'xray' => 'uuid'
+]);
