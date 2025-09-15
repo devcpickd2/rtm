@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Sortasi;
 use Illuminate\Http\Request;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Carbon\Carbon;
 
 class SortasiController extends Controller
 {
@@ -111,5 +113,25 @@ class SortasiController extends Controller
         $sortasi->delete();
 
         return redirect()->route('sortasi.index')->with('success', 'Data Sortasi Bahan Baku yang Tidak Sesuai berhasil dihapus');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $exportDate = $request->input('export_date');
+
+        if (!$exportDate) {
+            return redirect()->back()->with('error', 'Tanggal export harus diisi.');
+        }
+
+        $data = Sortasi::whereDate('date', $exportDate)->get();
+
+        return Pdf::view('pdf.sortasi-bahan-baku', [
+            'tanggal'  => Carbon::parse($exportDate)->format('d/m/Y'),
+            'data'     => $data,
+            'shift'    => $data->isNotEmpty() ? $data->first()->shift : '-',
+            'doc_code' => 'QR 27/09',
+        ])
+        ->format('a4')
+        ->name('sortasi-bahan-baku-' . $exportDate . '.pdf');
     }
 }

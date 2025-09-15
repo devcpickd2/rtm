@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Yoshinoya;
 use Illuminate\Http\Request;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Carbon\Carbon;
 
 class YoshinoyaController extends Controller
 {
@@ -113,5 +115,35 @@ class YoshinoyaController extends Controller
         $yoshinoya->delete();
 
         return redirect()->route('yoshinoya.index')->with('success', 'Data Parameter Produk Saus Yoshinoya berhasil dihapus');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $exportDate = $request->input('export_date');
+
+        if (!$exportDate) {
+            return redirect()->back()->with('error', 'Tanggal export harus diisi.');
+        }
+
+        $data = Yoshinoya::whereDate('date', $exportDate)->get();
+
+        return Pdf::view('pdf.parameter-saus-yoshinoya', [
+            'tanggal'  => Carbon::parse($exportDate)->format('d/m/Y'),
+            'data'     => $data,
+            'shift'    => $data->isNotEmpty() ? $data->first()->shift : '-',
+            'saus'     => $data->isNotEmpty() ? $data->first()->saus : 'Yoshinoya',
+            'zona'     => 'Zona 1', // Default value, adjust if needed
+            'doc_code' => 'QF 07/07', // Assuming this is the correct doc_code for Yoshinoya
+            'specs' => [
+                'suhu'       => '24 – 26',
+                'brix'       => '62 – 63',
+                'salt'       => '1.7 – 2.0',
+                'viscositas' => '70 – 280',
+                'bf1'        => '3000 – 7000 cP',
+                'bf2'        => '3000 – 7000 cP',
+            ],
+        ])
+        ->format('a4')
+        ->name('parameter-saus-yoshinoya-' . $exportDate . '.pdf');
     }
 }

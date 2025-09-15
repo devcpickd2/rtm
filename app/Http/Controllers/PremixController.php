@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Premix;
 use Illuminate\Http\Request;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Carbon\Carbon;
 
 class PremixController extends Controller
 {
@@ -109,5 +111,25 @@ class PremixController extends Controller
         $premix->delete();
 
         return redirect()->route('premix.index')->with('success', 'Data Verifikasi Premix berhasil dihapus');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $exportDate = $request->input('export_date');
+
+        if (!$exportDate) {
+            return redirect()->back()->with('error', 'Tanggal export harus diisi.');
+        }
+
+        $data = Premix::whereDate('date', $exportDate)->get();
+
+        return Pdf::view('pdf.verifikasi-premix', [
+            'company'  => 'PT Contoh Pangan Indonesia',
+            'doc_code' => 'QF-2009',
+            'tanggal'  => Carbon::parse($exportDate)->format('d/m/Y'),
+            'data'     => $data,
+        ])
+        ->format('a4')
+        ->name('verifikasi-premix-' . $exportDate . '.pdf');
     }
 }

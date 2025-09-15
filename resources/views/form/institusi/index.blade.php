@@ -137,6 +137,22 @@
         <div class="mt-3">
             {{ $data->withQueryString()->links('pagination::bootstrap-5') }}
         </div>
+
+        {{-- Export PDF --}}
+        <div class="mt-4 p-3 border rounded bg-light">
+            <h5 class="mb-3"><i class="bi bi-file-earmark-pdf"></i> Export Data Verifikasi Produk Institusi ke PDF</h5>
+            <form action="{{ route('institusi.exportPdf') }}" method="GET" target="_blank" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="export_date" class="form-label">Pilih Tanggal:</label>
+                    <input type="date" name="export_date" id="export_date" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 </div>

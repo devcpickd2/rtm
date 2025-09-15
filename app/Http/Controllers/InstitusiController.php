@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Institusi;
 use Illuminate\Http\Request;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Carbon\Carbon;
 
 class InstitusiController extends Controller
 {
@@ -119,5 +121,25 @@ class InstitusiController extends Controller
         $institusi->delete();
 
         return redirect()->route('institusi.index')->with('success', 'Data Verifikasi Produk Institusi berhasil dihapus');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $exportDate = $request->input('export_date');
+
+        if (!$exportDate) {
+            return redirect()->back()->with('error', 'Tanggal export harus diisi.');
+        }
+
+        $data = Institusi::whereDate('date', $exportDate)->get();
+
+        return Pdf::view('pdf.verifikasi-produk-institusi', [
+            'tanggal'  => Carbon::parse($exportDate)->format('d/m/Y'),
+            'data'     => $data,
+            'shift'    => $data->isNotEmpty() ? $data->first()->shift : '-',
+            'doc_code' => 'QR-3101',
+        ])
+        ->format('a4')
+        ->name('verifikasi-produk-institusi-' . $exportDate . '.pdf');
     }
 }

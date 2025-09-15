@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Rice;
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Carbon\Carbon;
 
 class RiceController extends Controller
 {
@@ -113,5 +115,26 @@ class RiceController extends Controller
 
         return redirect()->route('rice.index')
         ->with('success', 'Data Pemeriksaan Pemasakan dengan Rice Cooker berhasil dihapus');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $exportDate = $request->input('export_date');
+
+        if (!$exportDate) {
+            return redirect()->back()->with('error', 'Tanggal export harus diisi.');
+        }
+
+        $data = Rice::whereDate('date', $exportDate)->get();
+
+        return Pdf::view('pdf.pemeriksaan-rice-cooker', [
+            'tanggal'  => Carbon::parse($exportDate)->format('d/m/Y'),
+            'data'     => $data,
+            'shift'    => $data->isNotEmpty() ? $data->first()->shift : '-',
+            'produk'   => $data->isNotEmpty() ? $data->first()->nama_produk : '-',
+            'doc_code' => 'QF 07/08',
+        ])
+        ->format('a4')
+        ->name('pemeriksaan-rice-cooker-' . $exportDate . '.pdf');
     }
 }

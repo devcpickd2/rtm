@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Thawing;
 use Illuminate\Http\Request;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Carbon\Carbon;
 
 class ThawingController extends Controller
 {
@@ -125,5 +127,25 @@ class ThawingController extends Controller
         $thawing->delete();
 
         return redirect()->route('thawing.index')->with('success', 'Data Pemeriksaan Proses Thawing berhasil dihapus');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $exportDate = $request->input('export_date');
+
+        if (!$exportDate) {
+            return redirect()->back()->with('error', 'Tanggal export harus diisi.');
+        }
+
+        $data = Thawing::whereDate('date', $exportDate)->get();
+
+        return Pdf::view('pdf.pemeriksaan-thawing', [
+            'tanggal'  => Carbon::parse($exportDate)->format('d/m/Y'),
+            'data'     => $data,
+            'doc_code' => 'QR 20/09',
+        ])
+        ->format('a4')
+        ->landscape() // karena tabel lebar
+        ->name('pemeriksaan-thawing-' . $exportDate . '.pdf');
     }
 }

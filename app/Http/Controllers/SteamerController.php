@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Steamer;
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Carbon\Carbon;
 
 class SteamerController extends Controller
 {
@@ -114,5 +116,26 @@ class SteamerController extends Controller
 
         return redirect()->route('steamer.index')
         ->with('success', 'Data Pemeriksaan Pemasakan dengan Steamer berhasil dihapus');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $exportDate = $request->input('export_date');
+
+        if (!$exportDate) {
+            return redirect()->back()->with('error', 'Tanggal export harus diisi.');
+        }
+
+        $data = Steamer::whereDate('date', $exportDate)->get();
+
+        return Pdf::view('pdf.pemeriksaan-steamer', [
+            'tanggal'  => Carbon::parse($exportDate)->format('d/m/Y'),
+            'data'     => $data,
+            'shift'    => $data->isNotEmpty() ? $data->first()->shift : '-',
+            'produk'   => $data->isNotEmpty() ? $data->first()->nama_produk : '-',
+            'doc_code' => 'QF 07/07',
+        ])
+        ->format('a4')
+        ->name('pemeriksaan-steamer-' . $exportDate . '.pdf');
     }
 }

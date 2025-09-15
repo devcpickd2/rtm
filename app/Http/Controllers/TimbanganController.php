@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Timbangan;
 use Illuminate\Http\Request;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Carbon\Carbon;
 
 class TimbanganController extends Controller
 {
@@ -110,5 +112,25 @@ class TimbanganController extends Controller
         $timbangan->delete();
 
         return redirect()->route('timbangan.index')->with('success', 'Data Peneraan Timbangan berhasil dihapus');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $exportDate = $request->input('export_date');
+
+        if (!$exportDate) {
+            return redirect()->back()->with('error', 'Tanggal export harus diisi.');
+        }
+
+        $data = Timbangan::whereDate('date', $exportDate)->get();
+
+        return Pdf::view('pdf.peneraan-timbangan', [
+            'tanggal'  => Carbon::parse($exportDate)->format('d/m/Y'),
+            'data'     => $data,
+            'shift'    => $data->isNotEmpty() ? $data->first()->shift : '-',
+            'doc_code' => 'QR 13/01',
+        ])
+        ->format('a4')
+        ->name('peneraan-timbangan-' . $exportDate . '.pdf');
     }
 }
