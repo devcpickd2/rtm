@@ -73,7 +73,7 @@
 
 
     @php
-    $formActiveCooking = request()->routeIs('premix.*') || request()->routeIs('institusi.*') || request()->routeIs('timbangan.*') || request()->routeIs('thermometer.*') || request()->routeIs('sortasi.*') || request()->routeIs('thawing.*') || request()->routeIs('yoshinoya.*') || request()->routeIs('steamer.*') || request()->routeIs('rice.*') ;
+    $formActiveCooking = request()->routeIs('premix.*') || request()->routeIs('institusi.*') || request()->routeIs('timbangan.*') || request()->routeIs('thermometer.*') || request()->routeIs('sortasi.*') || request()->routeIs('thawing.*') || request()->routeIs('yoshinoya.*') || request()->routeIs('steamer.*') || request()->routeIs('rice.*') || request()->routeIs('thumbling.*') || request()->routeIs('noodle.*') || request()->routeIs('cooking.*') ;
     @endphp
     <li class="nav-item">
         <a class="nav-link {{ $formActiveCooking ? '' : 'collapsed' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseFormCooking" aria-expanded="{{ $formActiveCooking ? 'true' : 'false' }}" aria-controls="collapseFormCooking">
@@ -82,22 +82,40 @@
         </a>
         <div id="collapseFormCooking" class="collapse {{ $formActiveCooking ? 'show' : '' }}">
             <div class="bg-dark py-2 collapse-inner rounded">
-                <a class="collapse-item text-white {{ request()->routeIs('premix.*') ? 'active' : '' }}" href="{{ route('premix.index') }}">Verifikasi Premix</a>
-                <a class="collapse-item text-white {{ request()->routeIs('institusi.*') ? 'active' : '' }}" href="{{ route('institusi.index') }}">Verifikasi Produk Institusi</a>
+                <a class="collapse-item text-white {{ request()->routeIs('rice.*') ? 'active' : '' }}" href="{{ route('rice.index') }}">Pemeriksaan Pemasakan dengan Rice Cooker</a>
+                <a class="collapse-item text-white {{ request()->routeIs('noodle.*') ? 'active' : '' }}" href="{{ route('noodle.index') }}">Pemeriksaan Pemasakan Noodle</a>
                 <a class="collapse-item text-white {{ request()->routeIs('timbangan.*') ? 'active' : '' }}" href="{{ route('timbangan.index') }}">Peneraan Timbangan</a>
                 <a class="collapse-item text-white {{ request()->routeIs('thermometer.*') ? 'active' : '' }}" href="{{ route('thermometer.index') }}">Peneraan Thermometer</a>
-                <a class="collapse-item text-white {{ request()->routeIs('sortasi.*') ? 'active' : '' }}" href="{{ route('sortasi.index') }}">Sortasi Bahan Baku yang Tidak Sesuai</a>
                 <a class="collapse-item text-white {{ request()->routeIs('thawing.*') ? 'active' : '' }}" href="{{ route('thawing.index') }}">Pemeriksaan Proses Thawing</a>
-                <a class="collapse-item text-white {{ request()->routeIs('yoshinoya.*') ? 'active' : '' }}" href="{{ route('yoshinoya.index') }}">Parameter Produk Saus Yoshinoya</a>
+                <a class="collapse-item text-white {{ request()->routeIs('sortasi.*') ? 'active' : '' }}" href="{{ route('sortasi.index') }}">Sortasi Bahan Baku yang Tidak Sesuai</a>
+                <a class="collapse-item text-white {{ request()->routeIs('premix.*') ? 'active' : '' }}" href="{{ route('premix.index') }}">Verifikasi Premix</a>
+                <a class="collapse-item text-white {{ request()->routeIs('institusi.*') ? 'active' : '' }}" href="{{ route('institusi.index') }}">Verifikasi Produk Institusi</a>
+                <a class="collapse-item text-white {{ request()->routeIs('thumbling.*') ? 'active' : '' }}" href="{{ route('thumbling.index') }}">Pemeriksaan Proses Thumbling</a>
                 <a class="collapse-item text-white {{ request()->routeIs('steamer.*') ? 'active' : '' }}" href="{{ route('steamer.index') }}">Pemeriksaan Pemasakan dengan Steamer</a>
-                <a class="collapse-item text-white {{ request()->routeIs('rice.*') ? 'active' : '' }}" href="{{ route('rice.index') }}">Pemeriksaan Pemasakan dengan Rice Cooker</a>
+                <a class="collapse-item text-white {{ request()->routeIs('cooking.*') ? 'active' : '' }}" href="{{ route('cooking.index') }}">Pemeriksaan Pemasakan Produk di Steam/Cooking Kettle</a>
+                <a class="collapse-item text-white {{ request()->routeIs('yoshinoya.*') ? 'active' : '' }}" href="{{ route('yoshinoya.index') }}">Parameter Produk Saus Yoshinoya</a>
+            </div>
+        </div>
+    </li>
+
+    @php
+    $formActivePacking = request()->routeIs('kontaminasi.*') || request()->routeIs('xray.*') ;
+    @endphp
+    <li class="nav-item">
+        <a class="nav-link {{ $formActivePacking ? '' : 'collapsed' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseFormPacking" aria-expanded="{{ $formActivePacking ? 'true' : 'false' }}" aria-controls="collapseFormPacking">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Packing</span>
+        </a>
+        <div id="collapseFormPacking" class="collapse {{ $formActivePacking ? 'show' : '' }}">
+            <div class="bg-dark py-2 collapse-inner rounded">
+                <a class="collapse-item text-white {{ request()->routeIs('kontaminasi.*') ? 'active' : '' }}" href="{{ route('kontaminasi.index') }}">Kontaminasi Benda Asing</a>
+                <a class="collapse-item text-white {{ request()->routeIs('xray.*') ? 'active' : '' }}" href="{{ route('xray.index') }}">Pemeriksaan X Ray</a>
             </div>
         </div>
     </li>
 
     <hr class="sidebar-divider d-none d-md-block">
 
-    <!-- Sidebar Toggler -->
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>

@@ -13,14 +13,14 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3><i class="bi bi-list-check"></i> Data Verifikasi Premix</h3>
-                <a href="{{ route('premix.create') }}" class="btn btn-success">
+                <h3><i class="bi bi-list-check"></i> Data Pemeriksaan Pemasakan Produk di Steam/Cooking Kettle</h3>
+                <a href="{{ route('cooking.create') }}" class="btn btn-success">
                     <i class="bi bi-plus-circle"></i> Tambah
                 </a>
             </div>
 
             {{-- Filter dan Search --}}
-            <form method="GET" action="{{ route('premix.index') }}" class="row g-2 mb-3">
+            <form method="GET" action="{{ route('cooking.index') }}" class="row g-2 mb-3">
                 <div class="col-md-3">
                     <input type="date" name="start_date" class="form-control"
                     value="{{ request('start_date') }}" placeholder="Tanggal awal">
@@ -31,13 +31,13 @@
                 </div>
                 <div class="col-md-3">
                     <input type="text" name="search" class="form-control"
-                    value="{{ request('search') }}" placeholder="Cari premix/kode produksi...">
+                    value="{{ request('search') }}" placeholder="Cari Nama Produk/Kode Produksi...">
                 </div>
                 <div class="col-md-3 d-flex gap-2">
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-funnel"></i> Filter
                     </button>
-                    <a href="{{ route('premix.index') }}" class="btn btn-secondary w-100">
+                    <a href="{{ route('cooking.index') }}" class="btn btn-secondary w-100">
                         <i class="bi bi-x-circle"></i> Reset
                     </a>
                 </div>
@@ -50,11 +50,12 @@
                         <tr>
                             <th>NO.</th>
                             <th>Date | Shift</th>
-                            <th>Nama Premix</th>
+                            <th>Nama Produk</th>
+                            <th>Jenis Produk</th>
                             <th>Kode Produksi</th>
-                            <th>Sensori</th>
-                            <th>Tindakan Koreksi</th>
-                            <th>Catatan</th>
+                            <th>Waktu (Start - Stop)</th>
+                            <th>Mesin</th>
+                            <!-- <th>Tahapan Proses</th> -->
                             <th>Produksi</th>
                             <th>SPV</th>
                             <th>Action</th>
@@ -63,18 +64,64 @@
                     <tbody>
                         @php 
                         $no = ($data->currentPage() - 1) * $data->perPage() + 1; 
-
                         @endphp
                         @forelse ($data as $dep)
                         <tr>
                             <td class="text-center">{{ $no++ }}</td>
-                            <td>{{ \Carbon\Carbon::parse($dep->date)->format('d-m-Y') }} | Shift: {{ $dep->shift }}</td>
-                            <td>{{ $dep->nama_premix }}</td>
+                            <td>{{ \Carbon\Carbon::parse($dep->date)->format('d-m-Y') }} | Shift: {{ $dep->shift }}</td>   
+                            <td>{{ $dep->nama_produk }} ({{ $dep->sub_produk }})</td>
+                            <td>{{ $dep->jenis_produk }}</td>
                             <td>{{ $dep->kode_produksi }}</td>
-                            <td>{{ $dep->sensori }}</td>
-                            <td>{{ $dep->tindakan_koreksi ?: '-' }}</td>
-                            <td>{{ $dep->catatan ?: '-' }}</td>
-                            
+                            <td>{{ $dep->waktu_mulai }} - {{ $dep->waktu_selesai }}</td>
+                            <td>{{ $dep->nama_mesin }}</td>
+                           <!--  <td class="text-center">
+                                @php
+                                $pemasakan = json_decode($dep->pemasakan, true);
+                                @endphp
+
+                                @if(!empty($pemasakan))
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#pemasakanModal{{ $dep->uuid }}" style="font-weight: bold; text-decoration: underline;">
+                                    Hasil pemasakan
+                                </a>
+                                <div class="modal fade" id="pemasakanModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="pemasakanModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                    <div class="modal-dialog" style="max-width: 500px;">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-info text-white">
+                                                <h5 class="modal-title text-start" id="pemasakanModalLabel{{ $dep->uuid }}">Detail pemasakan</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <ul class="list-group text-left">
+                                                    @foreach($pemasakan as $index => $item)
+                                                    <li class="list-group-item mb-2" style="border: 1px solid ; border-radius: 5px; padding: 10px;">
+                                                        <div style="border-bottom: 1px solid ; font-weight: bold; padding-bottom: 5px; margin-bottom: 5px;">
+                                                            Pemeriksaan {{ $index + 1 }}
+                                                        </div>
+                                                        <div><strong>Kode Produksi:</strong> {{ $item['kode_produksi'] ?? '-' }}</div>
+                                                        <div><strong>T. Raw Material:</strong> {{ $item['suhu_rm'] ?? '-' }}°C</div>
+                                                        <div><strong>Jumlah Tray:</strong> {{ $item['jumlah_tray'] ?? '-' }}</div>
+                                                        <div><strong>T. Ruang:</strong> {{ $item['suhu_ruang'] ?? '-' }}°C</div>
+                                                        <div><strong>T. Produk:</strong> {{ $item['suhu_produk'] ?? '-' }}°C</div>
+                                                        <div><strong>T. Produk 1 Menit:</strong> {{ $item['suhu_after'] ?? '-' }}°C</div>
+                                                        <div><strong>Waktu:</strong> {{ $item['waktu'] ?? '-' }} Menit</div>
+                                                        <div><strong>Keterangan:</strong> {{ $item['keterangan'] ?? '-' }}</div>
+                                                        <div><strong>Jam Mulai:</strong> {{ $item['jam_mulai'] ?? '-' }}</div>
+                                                        <div><strong>Jam Selesai:</strong> {{ $item['jam_selesai'] ?? '-' }}</div>
+                                                    </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @else
+                                <span>-</span>
+                                @endif
+                            </td> -->
+
                             <td class="text-center align-middle">
                                 @if ($dep->status_produksi == 0)
                                 <span class="fw-bold text-secondary">Created</span>
@@ -116,10 +163,10 @@
                                     @elseif ($dep->status_spv == 2)
                                     <!-- Link buka modal -->
                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#revisionModal{{ $dep->uuid }}" 
-                                       class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
+                                     class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
 
-                                       <!-- Modal -->
-                                       <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                     <!-- Modal -->
+                                     <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-danger text-white">
@@ -140,11 +187,12 @@
                                     </div>
                                     @endif
                                 </td>
+
                                 <td class="text-center">
-                                    <a href="{{ route('premix.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
+                                    <a href="{{ route('cooking.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
                                         <i class="bi bi-pencil"></i> Edit
                                     </a>
-                                    <form action="{{ route('premix.destroy', $dep->uuid) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('cooking.destroy', $dep->uuid) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm"
@@ -156,7 +204,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="19" class="text-center">Belum ada data premix.</td>
+                            <td colspan="19" class="text-center">Belum ada data pemasakan.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -167,22 +215,22 @@
             <div class="mt-3">
                 {{ $data->withQueryString()->links('pagination::bootstrap-5') }}
             </div>
-        </div>
 
-        {{-- Export PDF --}}
-        <div class="mt-4 p-3 border rounded bg-light">
-            <h5 class="mb-3"><i class="bi bi-file-earmark-pdf"></i> Export Data Verifikasi Premix ke PDF</h5>
-            <form action="{{ route('premix.exportPdf') }}" method="GET" target="_blank" class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label for="export_date" class="form-label">Pilih Tanggal:</label>
-                    <input type="date" name="export_date" id="export_date" class="form-control" required>
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-danger w-100">
-                        <i class="bi bi-file-earmark-pdf"></i> Export PDF
-                    </button>
-                </div>
-            </form>
+            {{-- Export PDF --}}
+            <div class="mt-4 p-3 border rounded bg-light">
+                <h5 class="mb-3"><i class="bi bi-file-earmark-pdf"></i> Export Data Pemeriksaan Pemasakan Produk di Steam/Cooking Kettle ke PDF</h5>
+                <form action="{{ route('cooking.exportPdf') }}" method="GET" target="_blank" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="export_date" class="form-label">Pilih Tanggal:</label>
+                        <input type="date" name="export_date" id="export_date" class="form-control" required>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

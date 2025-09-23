@@ -13,14 +13,14 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3><i class="bi bi-list-check"></i> Data Verifikasi Premix</h3>
-                <a href="{{ route('premix.create') }}" class="btn btn-success">
+                <h3><i class="bi bi-list-check"></i> Data Kontaminasi Benda Asing</h3>
+                <a href="{{ route('kontaminasi.create') }}" class="btn btn-success">
                     <i class="bi bi-plus-circle"></i> Tambah
                 </a>
             </div>
 
             {{-- Filter dan Search --}}
-            <form method="GET" action="{{ route('premix.index') }}" class="row g-2 mb-3">
+            <form method="GET" action="{{ route('kontaminasi.index') }}" class="row g-2 mb-3">
                 <div class="col-md-3">
                     <input type="date" name="start_date" class="form-control"
                     value="{{ request('start_date') }}" placeholder="Tanggal awal">
@@ -31,13 +31,13 @@
                 </div>
                 <div class="col-md-3">
                     <input type="text" name="search" class="form-control"
-                    value="{{ request('search') }}" placeholder="Cari premix/kode produksi...">
+                    value="{{ request('search') }}" placeholder="Cari shift/catatan...">
                 </div>
                 <div class="col-md-3 d-flex gap-2">
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-funnel"></i> Filter
                     </button>
-                    <a href="{{ route('premix.index') }}" class="btn btn-secondary w-100">
+                    <a href="{{ route('kontaminasi.index') }}" class="btn btn-secondary w-100">
                         <i class="bi bi-x-circle"></i> Reset
                     </a>
                 </div>
@@ -50,11 +50,13 @@
                         <tr>
                             <th>NO.</th>
                             <th>Date | Shift</th>
-                            <th>Nama Premix</th>
+                            <th>Pukul</th>
+                            <th>Jenis Kontaminasi</th>
+                            <th>Bukti</th>
+                            <th>Nama Produk</th>
                             <th>Kode Produksi</th>
-                            <th>Sensori</th>
+                            <th>Tahapan</th>
                             <th>Tindakan Koreksi</th>
-                            <th>Catatan</th>
                             <th>Produksi</th>
                             <th>SPV</th>
                             <th>Action</th>
@@ -69,12 +71,19 @@
                         <tr>
                             <td class="text-center">{{ $no++ }}</td>
                             <td>{{ \Carbon\Carbon::parse($dep->date)->format('d-m-Y') }} | Shift: {{ $dep->shift }}</td>
-                            <td>{{ $dep->nama_premix }}</td>
+                            <td>{{ \Carbon\Carbon::parse($dep->pukul)->format('H:i') }}</td>
+                            <td>{{ $dep->jenis_kontaminasi }}</td>
+                            <td>
+                                @if($dep->bukti)
+                                <img src="{{ asset('storage/' . $dep->bukti) }}" alt="Foot Basin" style="max-width:100px; height:auto;">
+                                @else
+                                -
+                                @endif
+                            </td>
+                            <td>{{ $dep->nama_produk }}</td>
                             <td>{{ $dep->kode_produksi }}</td>
-                            <td>{{ $dep->sensori }}</td>
-                            <td>{{ $dep->tindakan_koreksi ?: '-' }}</td>
-                            <td>{{ $dep->catatan ?: '-' }}</td>
-                            
+                            <td>{{ $dep->tahapan }}</td>
+                            <td>{{ $dep->tindakan_koreksi }}</td>
                             <td class="text-center align-middle">
                                 @if ($dep->status_produksi == 0)
                                 <span class="fw-bold text-secondary">Created</span>
@@ -140,11 +149,12 @@
                                     </div>
                                     @endif
                                 </td>
+
                                 <td class="text-center">
-                                    <a href="{{ route('premix.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
+                                    <a href="{{ route('kontaminasi.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
                                         <i class="bi bi-pencil"></i> Edit
                                     </a>
-                                    <form action="{{ route('premix.destroy', $dep->uuid) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('kontaminasi.destroy', $dep->uuid) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm"
@@ -156,7 +166,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="19" class="text-center">Belum ada data premix.</td>
+                            <td colspan="19" class="text-center">Belum ada data kontaminasi.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -167,22 +177,6 @@
             <div class="mt-3">
                 {{ $data->withQueryString()->links('pagination::bootstrap-5') }}
             </div>
-        </div>
-
-        {{-- Export PDF --}}
-        <div class="mt-4 p-3 border rounded bg-light">
-            <h5 class="mb-3"><i class="bi bi-file-earmark-pdf"></i> Export Data Verifikasi Premix ke PDF</h5>
-            <form action="{{ route('premix.exportPdf') }}" method="GET" target="_blank" class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label for="export_date" class="form-label">Pilih Tanggal:</label>
-                    <input type="date" name="export_date" id="export_date" class="form-control" required>
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-danger w-100">
-                        <i class="bi bi-file-earmark-pdf"></i> Export PDF
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 </div>

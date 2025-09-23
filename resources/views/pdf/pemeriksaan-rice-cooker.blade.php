@@ -54,52 +54,48 @@
         </tr>
     </table>
 
-    @forelse ($data as $item)
+    @php
+        // Ensure $data is always a collection, even if empty, to allow @foreach to run
+        if ($data->isEmpty()) {
+            $data = collect([ (object)['cooker' => '[]', 'catatan' => null, 'status_produksi' => 0, 'status_spv' => 0] ]);
+        }
+    @endphp
+
+    @foreach ($data as $item)
         @php
-            $cookerData = json_decode($item->cooker, true);
+            $cookerData = json_decode($item->cooker, true) ?? [];
+            if (empty($cookerData)) {
+                $cookerData = [[]]; // Ensure at least one empty item to render table structure
+            }
         @endphp
 
-        @if(!empty($cookerData))
-            @foreach($cookerData as $index => $cookerItem)
-                <div style="margin-top: 8px; font-weight: bold;">Pemeriksaan Rice Cooker {{ $cookerItem['cooker_ke'] ?? ($index + 1) }}</div>
-                <table class="grid">
-                    <tr><th colspan="8" class="section-title">DATA PEMASAKAN</th></tr>
-                    <tr>
-                        <th>Cooker Ke</th>
-                        <th>Suhu Awal (°C)</th>
-                        <th>Suhu Akhir (°C)</th>
-                        <th>Waktu Mulai</th>
-                        <th>Waktu Selesai</th>
-                        <th>Lama Pemasakan (menit)</th>
-                        <th>Hasil Pemasakan</th>
-                        <th>Keterangan</th>
-                    </tr>
-                    <tr>
-                        <td>{{ $cookerItem['cooker_ke'] ?? '-' }}</td>
-                        <td>{{ $cookerItem['suhu_awal'] ?? '-' }}</td>
-                        <td>{{ $cookerItem['suhu_akhir'] ?? '-' }}</td>
-                        <td>{{ $cookerItem['waktu_mulai'] ?? '-' }}</td>
-                        <td>{{ $cookerItem['waktu_selesai'] ?? '-' }}</td>
-                        <td>{{ $cookerItem['lama_pemasakan'] ?? '-' }}</td>
-                        <td>{{ $cookerItem['hasil_pemasakan'] ?? '-' }}</td>
-                        <td>{{ $cookerItem['keterangan'] ?? '-' }}</td>
-                    </tr>
-                </table>
-            @endforeach
-        @else
+        @foreach($cookerData as $index => $cookerItem)
+            <div style="margin-top: 8px; font-weight: bold;">Pemeriksaan Rice Cooker {{ $cookerItem['cooker_ke'] ?? ($index + 1) }}</div>
             <table class="grid">
+                <tr><th colspan="8" class="section-title">DATA PEMASAKAN</th></tr>
                 <tr>
-                    <td colspan="8" class="no-col">Tidak ada data pemasakan dengan rice cooker untuk produk ini.</td>
+                    <th>Cooker Ke</th>
+                    <th>Suhu Awal (°C)</th>
+                    <th>Suhu Akhir (°C)</th>
+                    <th>Waktu Mulai</th>
+                    <th>Waktu Selesai</th>
+                    <th>Lama Pemasakan (menit)</th>
+                    <th>Hasil Pemasakan</th>
+                    <th>Keterangan</th>
+                </tr>
+                <tr>
+                    <td>{{ $cookerItem['cooker_ke'] ?? '-' }}</td>
+                    <td>{{ $cookerItem['suhu_awal'] ?? '-' }}</td>
+                    <td>{{ $cookerItem['suhu_akhir'] ?? '-' }}</td>
+                    <td>{{ $cookerItem['waktu_mulai'] ?? '-' }}</td>
+                    <td>{{ $cookerItem['waktu_selesai'] ?? '-' }}</td>
+                    <td>{{ $cookerItem['lama_pemasakan'] ?? '-' }}</td>
+                    <td>{{ $cookerItem['hasil_pemasakan'] ?? '-' }}</td>
+                    <td>{{ $cookerItem['keterangan'] ?? '-' }}</td>
                 </tr>
             </table>
-        @endif
-    @empty
-        <table class="grid">
-            <tr>
-                <td colspan="8" class="no-col">Tidak ada data pemeriksaan pemasakan dengan rice cooker untuk tanggal ini.</td>
-            </tr>
-        </table>
-    @endforelse
+        @endforeach
+    @endforeach
 
     <div class="note">
         Keterangan: ✔ = OK, × = tidak digunakan, TIDK OK = Tidak OK
