@@ -58,7 +58,7 @@
                 {{-- Bagian Pemeriksaan X-Ray --}}
                 <div class="card mb-4">
                     <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
-                        <strong>Pemeriksaan dengan X-Ray Cooker</strong>
+                        <strong>Pemeriksaan X-Ray</strong>
                         <button type="button" id="addpemeriksaanRow" class="btn btn-primary btn-sm">
                             + Tambah Baris
                         </button>

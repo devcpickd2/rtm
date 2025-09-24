@@ -53,7 +53,7 @@
                             <th>Nama Produk</th>
                             <th>Kode Produksi</th>
                             <th>No. Program</th>
-                            <!-- <th>Pemeriksaan</th> -->
+                            <th>Pemeriksaan</th>
                             <th>Produksi</th>
                             <th>SPV</th>
                             <th>Action</th>
@@ -70,42 +70,65 @@
                             <td>{{ $dep->nama_produk }}</td>
                             <td>{{ $dep->kode_produksi }}</td>
                             <td>{{ $dep->no_program }}</td>
-                         <!--    <td class="text-center">
+                            <td class="text-center">
                                 @php
                                 $pemeriksaan = json_decode($dep->pemeriksaan, true);
                                 @endphp
 
                                 @if(!empty($pemeriksaan))
                                 <a href="#" data-bs-toggle="modal" data-bs-target="#pemeriksaanModal{{ $dep->uuid }}" style="font-weight: bold; text-decoration: underline;">
-                                    Hasil Pemasakan
+                                    Result
                                 </a>
                                 <div class="modal fade" id="pemeriksaanModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="pemeriksaanModalLabel{{ $dep->uuid }}" aria-hidden="true">
-                                    <div class="modal-dialog" style="max-width: 500px;">
+                                    <div class="modal-dialog" style="max-width: 70%;">
                                         <div class="modal-content">
                                             <div class="modal-header bg-info text-white">
-                                                <h5 class="modal-title text-start" id="pemeriksaanModalLabel{{ $dep->uuid }}">Detail xray pemeriksaan</h5>
+                                                <h5 class="modal-title text-start" id="pemeriksaanModalLabel{{ $dep->uuid }}">Detail Pemeriksaan X-Ray</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <ul class="list-group text-left">
-                                                    @foreach($pemeriksaan as $index => $item)
-                                                    <li class="list-group-item mb-2" style="border: 1px solid ; border-radius: 5px; padding: 10px;">
-                                                        <div style="border-bottom: 1px solid ; font-weight: bold; padding-bottom: 5px; margin-bottom: 5px;">
-                                                            Pemeriksaan {{ $index + 1 }}
-                                                        </div>
-                                                        <div><strong>Pukul:</strong> {{ $item['pukul'] ?? '-' }}</div>
-                                                        <div><strong>Glass Ball:</strong> {{ $item['berat'] ?? '-' }} Kg</div>
-                                                        <div><strong>Kode Produksi:</strong> {{ $item['kode_produksi'] ?? '-' }}</div>
-                                                        <div><strong>Waktu pemeriksaan:</strong> {{ $item['waktu_masak'] ?? '-' }} Menit</div>
-                                                        <div><strong>Suhu Produk:</strong> {{ $item['suhu_produk'] ?? '-' }}°C</div>
-                                                        <div><strong>Suhu Produk 1 Menit:</strong> {{ $item['suhu_after'] ?? '-' }}°C</div>
-                                                        <div><strong>Suhu After Vacuum:</strong> {{ $item['suhu_vacuum'] ?? '-' }}°C</div>
-                                                        <div><strong>Jam Mulai:</strong> {{ $item['jam_mulai'] ?? '-' }}</div>
-                                                        <div><strong>Jam Selesai:</strong> {{ $item['jam_selesai'] ?? '-' }}</div>
-                                                    </li>
-                                                    @endforeach
-                                                </ul>
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-striped table-sm text-center align-middle">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>No</th>
+                                                                <th>Pukul</th>
+                                                                <th>Glass Ball</th>
+                                                                <th>Ceramic</th>
+                                                                <th>SUS 304 (wire)</th>
+                                                                <th>SUS 304 (ball)</th>
+                                                                <th>Keterangan</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach($pemeriksaan as $index => $item)
+                                                            <tr>
+                                                                <td>{{ $index + 1 }}</td>
+                                                                <td>{{ $item['pukul'] ?? '-' }}</td>
+                                                                <td>
+                                                                    {{ $item['glass_ball'] ?? '-' }}
+                                                                    {!! (isset($item['glass_ball_status']) && $item['glass_ball_status'] === 'Oke') ? '✅' : '' !!}
+                                                                </td>
+                                                                <td>
+                                                                    {{ $item['ceramic'] ?? '-' }}
+                                                                    {!! (isset($item['ceramic_status']) && $item['ceramic_status'] === 'Oke') ? '✅' : '' !!}
+                                                                </td>
+                                                                <td>
+                                                                    {{ $item['sus_wire'] ?? '-' }}
+                                                                    {!! (isset($item['sus_wire_status']) && $item['sus_wire_status'] === 'Oke') ? '✅' : '' !!}
+                                                                </td>
+                                                                <td>
+                                                                    {{ $item['sus_ball'] ?? '-' }}
+                                                                    {!! (isset($item['sus_ball_status']) && $item['sus_ball_status'] === 'Oke') ? '✅' : '' !!}
+                                                                </td>
+                                                                <td>{{ $item['keterangan'] ?? '-' }}</td>
+                                                            </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
+
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
                                             </div>
@@ -115,7 +138,7 @@
                                 @else
                                 <span>-</span>
                                 @endif
-                            </td> -->
+                            </td>
 
                             <td class="text-center align-middle">
                                 @if ($dep->status_produksi == 0)
@@ -158,10 +181,10 @@
                                     @elseif ($dep->status_spv == 2)
                                     <!-- Link buka modal -->
                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#revisionModal{{ $dep->uuid }}" 
-                                       class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
+                                     class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
 
-                                       <!-- Modal -->
-                                       <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                     <!-- Modal -->
+                                     <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-danger text-white">

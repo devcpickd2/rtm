@@ -55,7 +55,7 @@
                             <th>Kode Produksi</th>
                             <th>Waktu (Start - Stop)</th>
                             <th>Mesin</th>
-                            <!-- <th>Tahapan Proses</th> -->
+                            <th>Pemasakan</th>
                             <th>Produksi</th>
                             <th>SPV</th>
                             <th>Action</th>
@@ -72,43 +72,191 @@
                             <td>{{ $dep->nama_produk }} ({{ $dep->sub_produk }})</td>
                             <td>{{ $dep->jenis_produk }}</td>
                             <td>{{ $dep->kode_produksi }}</td>
-                            <td>{{ $dep->waktu_mulai }} - {{ $dep->waktu_selesai }}</td>
-                            <td>{{ $dep->nama_mesin }}</td>
-                           <!--  <td class="text-center">
+                            <td class="text-center">
+                                {{ \Carbon\Carbon::parse($dep->waktu_mulai)->format('H:i') }} -
+                                {{ \Carbon\Carbon::parse($dep->waktu_selesai)->format('H:i') }}
+                            </td>
+                            <td>
                                 @php
-                                $pemasakan = json_decode($dep->pemasakan, true);
+                                // decode json nama_mesin jadi array
+                                $namaMesin = is_array($dep->nama_mesin)
+                                ? $dep->nama_mesin
+                                : json_decode($dep->nama_mesin, true);
+                                if (!$namaMesin) $namaMesin = [];
                                 @endphp
 
-                                @if(!empty($pemasakan))
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#pemasakanModal{{ $dep->uuid }}" style="font-weight: bold; text-decoration: underline;">
-                                    Hasil pemasakan
-                                </a>
-                                <div class="modal fade" id="pemasakanModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="pemasakanModalLabel{{ $dep->uuid }}" aria-hidden="true">
-                                    <div class="modal-dialog" style="max-width: 500px;">
+                                {{-- tampilkan sebagai list koma --}}
+                                {{ implode(', ', $namaMesin) }}
+                            </td>
+                            <td class="text-center">
+                                @php
+                                $pemasakan = $dep->pemasakan_decoded ?? [];
+                                @endphp
+
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#pemasakanModal{{ $dep->uuid }}"
+                                 style="font-weight: bold; text-decoration: underline;">
+                                 Detail
+                             </a>
+
+                             <div class="modal fade" id="pemasakanModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="pemasakanModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-info text-white">
+                                            <h5 class="modal-title" id="pemasakanModalLabel{{ $dep->uuid }}">Detail Pemasakan</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            @if(count($pemasakan))
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-sm align-middle text-center">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>Pukul</th>
+                                                            <th>Tahapan Proses</th>
+                                                            <th>Jenis Bahan</th>
+                                                            <th>Kode Bahan</th>
+                                                            <th>Jumlah Standar</th>
+                                                            <th>Jumlah Aktual</th>
+                                                            <th>Sensori</th>
+                                                            <th>Lama Proses</th>
+                                                            <th>Mixing Paddle On</th>
+                                                            <th>Mixing Paddle Off</th>
+                                                            <th>Pressure</th>
+                                                            <th>Temperature</th>
+                                                            <th>Target Temp</th>
+                                                            <th>Actual Temp</th>
+                                                            <th>Suhu Pusat</th>
+                                                            <th>Warna</th>
+                                                            <th>Aroma</th>
+                                                            <th>Rasa</th>
+                                                            <th>Tekstur</th>
+                                                            <th>Catatan</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($pemasakan as $item)
+                                                        <tr>
+                                                            <td>{{ $item['pukul'] ?? '-' }}</td>
+                                                            <td>{{ $item['tahapan'] ?? '-' }}</td>
+
+                                                            {{-- Jenis Bahan --}}
+                                                            <td>
+                                                                @if(!empty($item['jenis_bahan']) && is_array($item['jenis_bahan']))
+                                                                <table class="table table-bordered table-sm mb-0">
+                                                                    @foreach($item['jenis_bahan'] as $jb)
+                                                                    <tr><td>{{ $jb }}</td></tr>
+                                                                    @endforeach
+                                                                </table>
+                                                                @else
+                                                                -
+                                                                @endif
+                                                            </td>
+
+                                                            {{-- Kode Bahan --}}
+                                                            <td>
+                                                                @if(!empty($item['kode_bahan']) && is_array($item['kode_bahan']))
+                                                                <table class="table table-bordered table-sm mb-0">
+                                                                    @foreach($item['kode_bahan'] as $kb)
+                                                                    <tr><td>{{ $kb }}</td></tr>
+                                                                    @endforeach
+                                                                </table>
+                                                                @else
+                                                                -
+                                                                @endif
+                                                            </td>
+
+                                                            {{-- Jumlah Standar --}}
+                                                            <td>
+                                                                @if(!empty($item['jumlah_standar']) && is_array($item['jumlah_standar']))
+                                                                <table class="table table-bordered table-sm mb-0">
+                                                                    @foreach($item['jumlah_standar'] as $js)
+                                                                    <tr><td>{{ $js }}</td></tr>
+                                                                    @endforeach
+                                                                </table>
+                                                                @else
+                                                                -
+                                                                @endif
+                                                            </td>
+
+                                                            {{-- Jumlah Aktual --}}
+                                                            <td>
+                                                                @if(!empty($item['jumlah_aktual']) && is_array($item['jumlah_aktual']))
+                                                                <table class="table table-bordered table-sm mb-0">
+                                                                    @foreach($item['jumlah_aktual'] as $ja)
+                                                                    <tr><td>{{ $ja }}</td></tr>
+                                                                    @endforeach
+                                                                </table>
+                                                                @else
+                                                                -
+                                                                @endif
+                                                            </td>
+
+                                                            {{-- Sensori --}}
+                                                            <td>
+                                                                @if(!empty($item['sensori']) && is_array($item['sensori']))
+                                                                <table class="table table-bordered table-sm mb-0">
+                                                                    @foreach($item['sensori'] as $s)
+                                                                    <tr><td>{{ $s }}</td></tr>
+                                                                    @endforeach
+                                                                </table>
+                                                                @else
+                                                                -
+                                                                @endif
+                                                            </td>
+
+                                                            <td>{{ $item['lama_proses'] ?? '-' }}</td>
+                                                            <td>{{ !empty($item['paddle_on']) ? 'Oke' : '-' }}</td>
+                                                            <td>{{ !empty($item['paddle_off']) ? 'Oke' : '-' }}</td>
+                                                            <td>{{ $item['pressure'] ?? '-' }}</td>
+                                                            <td>{{ $item['temperature'] ?? '-' }}</td>
+                                                            <td>{{ $item['target_temp'] ?? '-' }}</td>
+                                                            <td>{{ $item['actual_temp'] ?? '-' }}</td>
+                                                            <td>{{ $item['suhu_pusat'] ?? '-' }} ({{ $item['suhu_pusat_menit'] ?? '' }} Menit)</td>
+                                                            <td>{{ !empty($item['warna']) ? 'Oke' : '-' }}</td>
+                                                            <td>{{ !empty($item['aroma']) ? 'Oke' : '-' }}</td>
+                                                            <td>{{ !empty($item['rasa']) ? 'Oke' : '-' }}</td>
+                                                            <td>{{ !empty($item['tekstur']) ? 'Oke' : '-' }}</td>
+                                                            <td>{{ $item['catatan'] ?? '-' }}</td>
+                                                        </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            @else
+                                            <p class="text-center text-muted">Belum ada data pemasakan.</p>
+                                            @endif
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+
+                        <td class="text-center align-middle">
+                            @if ($dep->status_produksi == 0)
+                            <span class="fw-bold text-secondary">Created</span>
+                            @elseif ($dep->status_produksi == 1)
+                            <!-- Link buka modal -->
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#checkedModal{{ $dep->uuid }}" 
+                                class="fw-bold text-success text-decoration-none" style="cursor: pointer; font-weight: bold;">Checked</a>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="checkedModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="checkedModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
-                                            <div class="modal-header bg-info text-white">
-                                                <h5 class="modal-title text-start" id="pemasakanModalLabel{{ $dep->uuid }}">Detail pemasakan</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <div class="modal-header bg-success text-white">
+                                                <h5 class="modal-title" id="checkedModalLabel{{ $dep->uuid }}">Detail Checked</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <ul class="list-group text-left">
-                                                    @foreach($pemasakan as $index => $item)
-                                                    <li class="list-group-item mb-2" style="border: 1px solid ; border-radius: 5px; padding: 10px;">
-                                                        <div style="border-bottom: 1px solid ; font-weight: bold; padding-bottom: 5px; margin-bottom: 5px;">
-                                                            Pemeriksaan {{ $index + 1 }}
-                                                        </div>
-                                                        <div><strong>Kode Produksi:</strong> {{ $item['kode_produksi'] ?? '-' }}</div>
-                                                        <div><strong>T. Raw Material:</strong> {{ $item['suhu_rm'] ?? '-' }}°C</div>
-                                                        <div><strong>Jumlah Tray:</strong> {{ $item['jumlah_tray'] ?? '-' }}</div>
-                                                        <div><strong>T. Ruang:</strong> {{ $item['suhu_ruang'] ?? '-' }}°C</div>
-                                                        <div><strong>T. Produk:</strong> {{ $item['suhu_produk'] ?? '-' }}°C</div>
-                                                        <div><strong>T. Produk 1 Menit:</strong> {{ $item['suhu_after'] ?? '-' }}°C</div>
-                                                        <div><strong>Waktu:</strong> {{ $item['waktu'] ?? '-' }} Menit</div>
-                                                        <div><strong>Keterangan:</strong> {{ $item['keterangan'] ?? '-' }}</div>
-                                                        <div><strong>Jam Mulai:</strong> {{ $item['jam_mulai'] ?? '-' }}</div>
-                                                        <div><strong>Jam Selesai:</strong> {{ $item['jam_selesai'] ?? '-' }}</div>
-                                                    </li>
-                                                    @endforeach
+                                                <ul class="list-unstyled mb-0">
+                                                    <li><strong>Status:</strong> Checked</li>
+                                                    <li><strong>Nama Produksi:</strong> {{ $dep->nama_produksi ?? '-' }}</li>
                                                 </ul>
                                             </div>
                                             <div class="modal-footer">
@@ -117,106 +265,73 @@
                                         </div>
                                     </div>
                                 </div>
-                                @else
-                                <span>-</span>
+                                @elseif ($dep->status_produksi == 2)
+                                <span class="fw-bold text-danger">Recheck</span>
                                 @endif
-                            </td> -->
+                            </td>
 
                             <td class="text-center align-middle">
-                                @if ($dep->status_produksi == 0)
+                                @if ($dep->status_spv == 0)
                                 <span class="fw-bold text-secondary">Created</span>
-                                @elseif ($dep->status_produksi == 1)
+                                @elseif ($dep->status_spv == 1)
+                                <span class="fw-bold text-success">Verified</span>
+                                @elseif ($dep->status_spv == 2)
                                 <!-- Link buka modal -->
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#checkedModal{{ $dep->uuid }}" 
-                                    class="fw-bold text-success text-decoration-none" style="cursor: pointer; font-weight: bold;">Checked</a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#revisionModal{{ $dep->uuid }}" 
+                                   class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
 
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="checkedModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="checkedModalLabel{{ $dep->uuid }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-success text-white">
-                                                    <h5 class="modal-title" id="checkedModalLabel{{ $dep->uuid }}">Detail Checked</h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <ul class="list-unstyled mb-0">
-                                                        <li><strong>Status:</strong> Checked</li>
-                                                        <li><strong>Nama Produksi:</strong> {{ $dep->nama_produksi ?? '-' }}</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
-                                                </div>
+                                   <!-- Modal -->
+                                   <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title" id="revisionModalLabel{{ $dep->uuid }}">Detail Revisi</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <ul class="list-unstyled mb-0">
+                                                    <li><strong>Status:</strong> Revision</li>
+                                                    <li><strong>Catatan:</strong> {{ $dep->catatan_spv ?? '-' }}</li>
+                                                </ul>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
                                             </div>
                                         </div>
                                     </div>
-                                    @elseif ($dep->status_produksi == 2)
-                                    <span class="fw-bold text-danger">Recheck</span>
-                                    @endif
-                                </td>
-
-                                <td class="text-center align-middle">
-                                    @if ($dep->status_spv == 0)
-                                    <span class="fw-bold text-secondary">Created</span>
-                                    @elseif ($dep->status_spv == 1)
-                                    <span class="fw-bold text-success">Verified</span>
-                                    @elseif ($dep->status_spv == 2)
-                                    <!-- Link buka modal -->
-                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#revisionModal{{ $dep->uuid }}" 
-                                     class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
-
-                                     <!-- Modal -->
-                                     <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title" id="revisionModalLabel{{ $dep->uuid }}">Detail Revisi</h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <ul class="list-unstyled mb-0">
-                                                        <li><strong>Status:</strong> Revision</li>
-                                                        <li><strong>Catatan:</strong> {{ $dep->catatan_spv ?? '-' }}</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endif
-                                </td>
-
-                                <td class="text-center">
-                                    <a href="{{ route('cooking.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </a>
-                                    <form action="{{ route('cooking.destroy', $dep->uuid) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Yakin ingin menghapus?')">
-                                        <i class="bi bi-trash"></i> Hapus
-                                    </button>
-                                </form>
+                                </div>
+                                @endif
                             </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="19" class="text-center">Belum ada data pemasakan.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
 
-            {{-- Pagination --}}
-            <div class="mt-3">
-                {{ $data->withQueryString()->links('pagination::bootstrap-5') }}
-            </div>
+                            <td class="text-center">
+                                <a href="{{ route('cooking.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                                <form action="{{ route('cooking.destroy', $dep->uuid) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Yakin ingin menghapus?')">
+                                    <i class="bi bi-trash"></i> Hapus
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="19" class="text-center">Belum ada data pemasakan.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Pagination --}}
+        <div class="mt-3">
+            {{ $data->withQueryString()->links('pagination::bootstrap-5') }}
         </div>
     </div>
+</div>
 </div>
 
 {{-- Auto-hide alert setelah 3 detik --}}

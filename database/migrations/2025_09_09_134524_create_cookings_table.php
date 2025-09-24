@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('kode_produksi');
             $table->time('waktu_mulai');
             $table->time('waktu_selesai');
-            $table->string('nama_mesin');
-            $table->longText('pemasakan');
+            $table->longText('nama_mesin')->nullable();
+            $table->longText('pemasakan')->nullable();
             $table->string('catatan')->nullable();
             $table->string('nama_produksi')->nullable();
             $table->string('status_produksi')->nullable();

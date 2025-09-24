@@ -43,7 +43,7 @@
                             <label class="form-label">Jenis Saus</label>
                             <select id="saus" name="saus" class="form-control" required>
                                 <option value="" disabled selected>Pilih Saus</option>
-                                <option value="Yoshinoya">Yoshinoya</option>
+                                <option value="Teriyaki">Teriyaki</option>
                                 <option value="Vegetable">Vegetable</option>
                             </select>
                         </div>

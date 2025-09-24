@@ -83,25 +83,68 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <ul class="list-group text-left">
-                                                    @foreach($cooker as $index => $item)
-                                                    <li class="list-group-item mb-2" style="border: 1px solid ; border-radius: 5px; padding: 10px;">
-                                                        <div style="border-bottom: 1px solid ; font-weight: bold; padding-bottom: 5px; margin-bottom: 5px;">
-                                                            Pemeriksaan {{ $index + 1 }}
-                                                        </div>
-                                                        <div><strong>Kode Berat:</strong> {{ $item['kode_beras'] ?? '-' }}</div>
-                                                        <div><strong>Berat:</strong> {{ $item['berat'] ?? '-' }} Kg</div>
-                                                        <div><strong>Kode Produksi:</strong> {{ $item['kode_produksi'] ?? '-' }}</div>
-                                                        <div><strong>Waktu Cooker:</strong> {{ $item['waktu_masak'] ?? '-' }} Menit</div>
-                                                        <div><strong>Suhu Produk:</strong> {{ $item['suhu_produk'] ?? '-' }}°C</div>
-                                                        <div><strong>Suhu Produk 1 Menit:</strong> {{ $item['suhu_after'] ?? '-' }}°C</div>
-                                                        <div><strong>Suhu After Vacuum:</strong> {{ $item['suhu_vacuum'] ?? '-' }}°C</div>
-                                                        <div><strong>Jam Mulai:</strong> {{ $item['jam_mulai'] ?? '-' }}</div>
-                                                        <div><strong>Jam Selesai:</strong> {{ $item['jam_selesai'] ?? '-' }}</div>
-                                                    </li>
-                                                    @endforeach
-                                                </ul>
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-sm text-left align-middle">
+                                                        <tbody>
+                                                            <tr>
+                                                                <th>Kode Berat</th>
+                                                                @foreach($cooker as $item)
+                                                                <td>{{ $item['kode_beras'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Berat (Kg)</th>
+                                                                @foreach($cooker as $item)
+                                                                <td>{{ $item['berat'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Kode Produksi</th>
+                                                                @foreach($cooker as $item)
+                                                                <td>{{ $item['kode_produksi'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Waktu Cooker (Menit)</th>
+                                                                @foreach($cooker as $item)
+                                                                <td>{{ $item['waktu_masak'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Suhu Produk (°C)</th>
+                                                                @foreach($cooker as $item)
+                                                                <td>{{ $item['suhu_produk'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Suhu Produk 1 Menit (°C)</th>
+                                                                @foreach($cooker as $item)
+                                                                <td>{{ $item['suhu_after'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Suhu After Vacuum (°C)</th>
+                                                                @foreach($cooker as $item)
+                                                                <td>{{ $item['suhu_vacuum'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Jam Mulai</th>
+                                                                @foreach($cooker as $item)
+                                                                <td>{{ $item['jam_mulai'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Jam Selesai</th>
+                                                                @foreach($cooker as $item)
+                                                                <td>{{ $item['jam_selesai'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
+
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
                                             </div>
@@ -112,7 +155,6 @@
                                 <span>-</span>
                                 @endif
                             </td>
-
 
                             <td class="text-center align-middle">
                                 @if ($dep->status_produksi == 0)
@@ -155,10 +197,10 @@
                                     @elseif ($dep->status_spv == 2)
                                     <!-- Link buka modal -->
                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#revisionModal{{ $dep->uuid }}" 
-                                       class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
+                                     class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
 
-                                       <!-- Modal -->
-                                       <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                     <!-- Modal -->
+                                     <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-danger text-white">

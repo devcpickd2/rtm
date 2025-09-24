@@ -16,13 +16,13 @@
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label class="form-label">Tanggal</label>
                                 <input type="date" id="dateInput" name="date" 
                                 class="form-control" 
                                 value="{{ old('date', $kebersihan_ruang->date) }}" required>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label class="form-label">Shift</label>
                                 <select id="shiftInput" name="shift" class="form-control" required>
                                     <option value="1" {{ old('shift', $kebersihan_ruang->shift) == 1 ? 'selected' : '' }}>Shift 1</option>
@@ -30,12 +30,12 @@
                                     <option value="3" {{ old('shift', $kebersihan_ruang->shift) == 3 ? 'selected' : '' }}>Shift 3</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <!-- <div class="col-md-4">
                                 <label class="form-label">Pukul</label>
                                 <input type="time" id="timeInput" name="pukul" 
                                 class="form-control" 
                                 value="{{ old('pukul', $kebersihan_ruang->pukul) }}" required>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -107,7 +107,7 @@
                                                 </td>
                                                 <td>
                                                     <select name="rice_boiling[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
+                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
                                                         <option value="{{ $option }}" {{ (old("rice_boiling.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
                                                             {{ $option }}
                                                         </option>
@@ -164,7 +164,7 @@
                                                 </td>
                                                 <td>
                                                     <select name="noodle[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
+                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
                                                         <option value="{{ $option }}" {{ (old("noodle.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
                                                             {{ $option }}
                                                         </option>
@@ -221,675 +221,675 @@
                                                 </td>
                                                 <td>
                                                     <select name="cr_rm[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
-                                                        <option value="{{ $option }}" {{ (old("cr_rm.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
-                                                            {{ $option }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="cr_rm[{{ $i }}][masalah]" class="form-control" value="{{ old("cr_rm.$i.masalah", $row['masalah'] ?? '') }}"></td>
-                                                <td><input type="text" name="cr_rm[{{ $i }}][tindakan]" class="form-control" value="{{ old("cr_rm.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                       @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
+                                                       <option value="{{ $option }}" {{ (old("cr_rm.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
+                                                        {{ $option }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td><input type="text" name="cr_rm[{{ $i }}][masalah]" class="form-control" value="{{ old("cr_rm.$i.masalah", $row['masalah'] ?? '') }}"></td>
+                                            <td><input type="text" name="cr_rm[{{ $i }}][tindakan]" class="form-control" value="{{ old("cr_rm.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        {{-- CS 1 --}}
+                        <div class="tab-pane fade" id="cs-1">
+                            @php
+                            $lokasiList = [
+                            'Lantai','Dinding','Kurtain','Pintu','Langit-langit','AC','Rak Penampung Produk'
+                            ];
+                            $cs_satu = $kebersihan_ruang->cs_1 ?? [];
+                            @endphp
+
+                            {{-- Jam Pemeriksaan (satu field saja) --}}
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
+                                <input 
+                                type="time" 
+                                name="cs_1[jam]" 
+                                class="form-control"
+                                value="{{ old('cs_1.jam', $kebersihan_ruang->cs_1['jam'] ?? '') }}">
                             </div>
 
-                            {{-- CS 1 --}}
-                            <div class="tab-pane fade" id="cs-1">
-                                @php
-                                $lokasiList = [
-                                'Lantai','Dinding','Kurtain','Pintu','Langit-langit','AC','Rak Penampung Produk'
-                                ];
-                                $cs_satu = $kebersihan_ruang->cs_1 ?? [];
-                                @endphp
+                            <div class="table-responsive">
+                                <table class="table table-bordered align-middle">
+                                    <thead class="table-info text-center">
+                                        <tr>
+                                            <th>Lokasi</th>
+                                            <th>Kondisi</th>
+                                            <th>Masalah</th>
+                                            <th>Tindakan Koreksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($lokasiList as $i => $lokasi)
+                                        @php
+                                        $row = $cs_satu[$i] ?? [];
+                                        @endphp
+                                        <tr>
+                                            <td class="text-center">
+                                                {{ $lokasi }}
+                                                <input type="hidden" name="cs_1[{{ $i }}][lokasi]" value="{{ $lokasi }}">
+                                            </td>
+                                            <td>
+                                                <select name="cs_1[{{ $i }}][kondisi]" class="form-control form-select">
+                                                    @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
+                                                    <option value="{{ $option }}" {{ (old("cs_1.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
+                                                        {{ $option }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td><input type="text" name="cs_1[{{ $i }}][masalah]" class="form-control" value="{{ old("cs_1.$i.masalah", $row['masalah'] ?? '') }}"></td>
+                                            <td><input type="text" name="cs_1[{{ $i }}][tindakan]" class="form-control" value="{{ old("cs_1.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-                                {{-- Jam Pemeriksaan (satu field saja) --}}
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
-                                    <input 
-                                    type="time" 
-                                    name="cs_1[jam]" 
-                                    class="form-control"
-                                    value="{{ old('cs_1.jam', $kebersihan_ruang->cs_1['jam'] ?? '') }}">
-                                </div>
+                        {{-- CS 2 --}}
+                        <div class="tab-pane fade" id="cs-2">
+                            @php
+                            $lokasiList = [
+                            'Lantai','Dinding','Kurtain','Pintu','Langit-langit','AC','Rak Penampung Produk'
+                            ];
+                            $cs_dua = $kebersihan_ruang->cs_1 ?? [];
+                            @endphp
 
-                                <div class="table-responsive">
-                                    <table class="table table-bordered align-middle">
-                                        <thead class="table-info text-center">
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Kondisi</th>
-                                                <th>Masalah</th>
-                                                <th>Tindakan Koreksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($lokasiList as $i => $lokasi)
-                                            @php
-                                            $row = $cs_satu[$i] ?? [];
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $lokasi }}
-                                                    <input type="hidden" name="cs_1[{{ $i }}][lokasi]" value="{{ $lokasi }}">
-                                                </td>
-                                                <td>
-                                                    <select name="cs_1[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
-                                                        <option value="{{ $option }}" {{ (old("cs_1.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
-                                                            {{ $option }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="cs_1[{{ $i }}][masalah]" class="form-control" value="{{ old("cs_1.$i.masalah", $row['masalah'] ?? '') }}"></td>
-                                                <td><input type="text" name="cs_1[{{ $i }}][tindakan]" class="form-control" value="{{ old("cs_1.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                            {{-- Jam Pemeriksaan (satu field saja) --}}
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
+                                <input 
+                                type="time" 
+                                name="cs_2[jam]" 
+                                class="form-control"
+                                value="{{ old('cs_2.jam', $kebersihan_ruang->cs_2['jam'] ?? '') }}">
                             </div>
 
-                            {{-- CS 2 --}}
-                            <div class="tab-pane fade" id="cs-2">
-                                @php
-                                $lokasiList = [
-                                'Lantai','Dinding','Kurtain','Pintu','Langit-langit','AC','Rak Penampung Produk'
-                                ];
-                                $cs_dua = $kebersihan_ruang->cs_1 ?? [];
-                                @endphp
+                            <div class="table-responsive">
+                                <table class="table table-bordered align-middle">
+                                    <thead class="table-info text-center">
+                                        <tr>
+                                            <th>Lokasi</th>
+                                            <th>Kondisi</th>
+                                            <th>Masalah</th>
+                                            <th>Tindakan Koreksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($lokasiList as $i => $lokasi)
+                                        @php
+                                        $row = $cs_dua[$i] ?? [];
+                                        @endphp
+                                        <tr>
+                                            <td class="text-center">
+                                                {{ $lokasi }}
+                                                <input type="hidden" name="cs_2[{{ $i }}][lokasi]" value="{{ $lokasi }}">
+                                            </td>
+                                            <td>
+                                                <select name="cs_2[{{ $i }}][kondisi]" class="form-control form-select">
+                                                    @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
+                                                    <option value="{{ $option }}" {{ (old("cs_2.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
+                                                        {{ $option }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td><input type="text" name="cs_2[{{ $i }}][masalah]" class="form-control" value="{{ old("cs_2.$i.masalah", $row['masalah'] ?? '') }}"></td>
+                                            <td><input type="text" name="cs_2[{{ $i }}][tindakan]" class="form-control" value="{{ old("cs_2.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-                                {{-- Jam Pemeriksaan (satu field saja) --}}
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
-                                    <input 
-                                    type="time" 
-                                    name="cs_2[jam]" 
-                                    class="form-control"
-                                    value="{{ old('cs_2.jam', $kebersihan_ruang->cs_2['jam'] ?? '') }}">
-                                </div>
+                        {{-- Seasoning --}}
+                        <div class="tab-pane fade" id="seasoning">
+                            @php
+                            $lokasiList = [
+                            'Lantai','Dinding','Kurtain','Pintu','Langit-langit','AC','Rak Penampung Produk', 'Lampu dan Cover', 'Pemisahan Allergen dan Non Allergen', 'Terdapat Tagging'
+                            ];
+                            $season = $kebersihan_ruang->seasoning ?? [];
+                            @endphp
 
-                                <div class="table-responsive">
-                                    <table class="table table-bordered align-middle">
-                                        <thead class="table-info text-center">
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Kondisi</th>
-                                                <th>Masalah</th>
-                                                <th>Tindakan Koreksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($lokasiList as $i => $lokasi)
-                                            @php
-                                            $row = $cs_dua[$i] ?? [];
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $lokasi }}
-                                                    <input type="hidden" name="cs_2[{{ $i }}][lokasi]" value="{{ $lokasi }}">
-                                                </td>
-                                                <td>
-                                                    <select name="cs_2[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
-                                                        <option value="{{ $option }}" {{ (old("cs_2.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
-                                                            {{ $option }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="cs_2[{{ $i }}][masalah]" class="form-control" value="{{ old("cs_2.$i.masalah", $row['masalah'] ?? '') }}"></td>
-                                                <td><input type="text" name="cs_2[{{ $i }}][tindakan]" class="form-control" value="{{ old("cs_2.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                            {{-- Jam Pemeriksaan (satu field saja) --}}
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
+                                <input 
+                                type="time" 
+                                name="seasoning[jam]" 
+                                class="form-control"
+                                value="{{ old('seasoning.jam', $kebersihan_ruang->seasoning['jam'] ?? '') }}">
                             </div>
 
-                            {{-- Seasoning --}}
-                            <div class="tab-pane fade" id="seasoning">
-                                @php
-                                $lokasiList = [
-                                'Lantai','Dinding','Kurtain','Pintu','Langit-langit','AC','Rak Penampung Produk', 'Lampu dan Cover', 'Pemisahan Allergen dan Non Allergen', 'Terdapat Tagging'
-                                ];
-                                $season = $kebersihan_ruang->seasoning ?? [];
-                                @endphp
-
-                                {{-- Jam Pemeriksaan (satu field saja) --}}
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
-                                    <input 
-                                    type="time" 
-                                    name="seasoning[jam]" 
-                                    class="form-control"
-                                    value="{{ old('seasoning.jam', $kebersihan_ruang->seasoning['jam'] ?? '') }}">
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table class="table table-bordered align-middle">
-                                        <thead class="table-info text-center">
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Kondisi</th>
-                                                <th>Masalah</th>
-                                                <th>Tindakan Koreksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($lokasiList as $i => $lokasi)
-                                            @php
-                                            $row = $season[$i] ?? [];
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $lokasi }}
-                                                    <input type="hidden" name="seasoning[{{ $i }}][lokasi]" value="{{ $lokasi }}">
-                                                </td>
-                                                <td>
-                                                    <select name="seasoning[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
-                                                        <option value="{{ $option }}" {{ (old("seasoning.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
-                                                            {{ $option }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="seasoning[{{ $i }}][masalah]" class="form-control" value="{{ old("seasoning.$i.masalah", $row['masalah'] ?? '') }}"></td>
-                                                <td><input type="text" name="seasoning[{{ $i }}][tindakan]" class="form-control" value="{{ old("seasoning.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            {{-- CS FG --}}
-                            <div class="tab-pane fade" id="cs-fg">
-                                @php
-                                $lokasiList = [
-                                'Lantai','Dinding','Kurtain','Pintu','Langit-langit','AC','Rak Penampung Produk'
-                                ];
-                                $csFg = $kebersihan_ruang->cs_fg ?? [];
-                                @endphp
-
-                                {{-- Jam Pemeriksaan (satu field saja) --}}
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
-                                    <input 
-                                    type="time" 
-                                    name="cs_fg[jam]" 
-                                    class="form-control"
-                                    value="{{ old('cs_fg.jam', $kebersihan_ruang->cs_fg['jam'] ?? '') }}">
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table class="table table-bordered align-middle">
-                                        <thead class="table-info text-center">
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Kondisi</th>
-                                                <th>Masalah</th>
-                                                <th>Tindakan Koreksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($lokasiList as $i => $lokasi)
-                                            @php
-                                            $row = $csFg[$i] ?? [];
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $lokasi }}
-                                                    <input type="hidden" name="cs_fg[{{ $i }}][lokasi]" value="{{ $lokasi }}">
-                                                </td>
-                                                <td>
-                                                    <select name="cs_fg[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
-                                                        <option value="{{ $option }}" {{ (old("cs_fg.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
-                                                            {{ $option }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="cs_fg[{{ $i }}][masalah]" class="form-control" value="{{ old("cs_fg.$i.masalah", $row['masalah'] ?? '') }}"></td>
-                                                <td><input type="text" name="cs_fg[{{ $i }}][tindakan]" class="form-control" value="{{ old("cs_fg.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            {{-- DS --}}
-                            <div class="tab-pane fade" id="ds">
-                                @php
-                                $lokasiList = [
-                                'Lantai','Dinding','Kurtain','Pintu','Langit-langit','AC','Rak Penampung Produk', 'Terdapat Tagging', 'Lampu dan Cover'
-                                ];                                
-                                $dryStore = $kebersihan_ruang->ds ?? [];
-                                @endphp
-
-                                {{-- Jam Pemeriksaan (satu field saja) --}}
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
-                                    <input 
-                                    type="time" 
-                                    name="ds[jam]" 
-                                    class="form-control"
-                                    value="{{ old('ds.jam', $kebersihan_ruang->ds['jam'] ?? '') }}">
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table class="table table-bordered align-middle">
-                                        <thead class="table-info text-center">
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Kondisi</th>
-                                                <th>Masalah</th>
-                                                <th>Tindakan Koreksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($lokasiList as $i => $lokasi)
-                                            @php
-                                            $row = $dryStore[$i] ?? [];
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $lokasi }}
-                                                    <input type="hidden" name="ds[{{ $i }}][lokasi]" value="{{ $lokasi }}">
-                                                </td>
-                                                <td>
-                                                    <select name="ds[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
-                                                        <option value="{{ $option }}" {{ (old("ds.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
-                                                            {{ $option }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="ds[{{ $i }}][masalah]" class="form-control" value="{{ old("ds.$i.masalah", $row['masalah'] ?? '') }}"></td>
-                                                <td><input type="text" name="ds[{{ $i }}][tindakan]" class="form-control" value="{{ old("ds.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            {{-- Prep Room --}}
-                            <div class="tab-pane fade" id="prep-room">
-                                @php
-                                $lokasiList = [
-                                'Lantai','Dinding','Pintu','Langit-langit', 'Saluran Air Buangan', 'Lampu dan Cover', 'Vegetable Washing Machine', 'Slicer', 'Peeling Machine', 'Vacuum Tumbler'
-                                ];
-                                $prepRoom = $kebersihan_ruang->prep_room ?? [];
-                                @endphp
-
-                                {{-- Jam Pemeriksaan (satu field saja) --}}
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
-                                    <input 
-                                    type="time" 
-                                    name="prep_room[jam]" 
-                                    class="form-control"
-                                    value="{{ old('prep_room.jam', $kebersihan_ruang->prep_room['jam'] ?? '') }}">
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table class="table table-bordered align-middle">
-                                        <thead class="table-info text-center">
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Kondisi</th>
-                                                <th>Masalah</th>
-                                                <th>Tindakan Koreksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($lokasiList as $i => $lokasi)
-                                            @php
-                                            $row = $prepRoom[$i] ?? [];
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $lokasi }}
-                                                    <input type="hidden" name="prep_room[{{ $i }}][lokasi]" value="{{ $lokasi }}">
-                                                </td>
-                                                <td>
-                                                    <select name="prep_room[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
-                                                        <option value="{{ $option }}" {{ (old("prep_room.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
-                                                            {{ $option }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="prep_room[{{ $i }}][masalah]" class="form-control" value="{{ old("prep_room.$i.masalah", $row['masalah'] ?? '') }}"></td>
-                                                <td><input type="text" name="prep_room[{{ $i }}][tindakan]" class="form-control" value="{{ old("prep_room.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            {{-- Cooking --}}
-                            <div class="tab-pane fade" id="cooking">
-                                @php
-                                $lokasiList = [
-                                'Lantai','Dinding','Pintu','Langit-langit', 'Saluran Air Buangan', 'Lampu dan Cover', 'Alco Cooking Mixer', 'Tilting Kettle', 'Exhaust', 'Stir Fryer (Provisur)', 'Steamer', 'Bowl Cutter'
-                                ];
-                                $cook = $kebersihan_ruang->cooking ?? [];
-                                @endphp
-
-                                {{-- Jam Pemeriksaan (satu field saja) --}}
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
-                                    <input 
-                                    type="time" 
-                                    name="cookingjam]" 
-                                    class="form-control"
-                                    value="{{ old('cooking.jam', $kebersihan_ruang->cooking['jam'] ?? '') }}">
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table class="table table-bordered align-middle">
-                                        <thead class="table-info text-center">
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Kondisi</th>
-                                                <th>Masalah</th>
-                                                <th>Tindakan Koreksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($lokasiList as $i => $lokasi)
-                                            @php
-                                            $row = $cook[$i] ?? [];
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $lokasi }}
-                                                    <input type="hidden" name="cooking[{{ $i }}][lokasi]" value="{{ $lokasi }}">
-                                                </td>
-                                                <td>
-                                                    <select name="cooking[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
-                                                        <option value="{{ $option }}" {{ (old("cooking.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
-                                                            {{ $option }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="cooking[{{ $i }}][masalah]" class="form-control" value="{{ old("cooking.$i.masalah", $row['masalah'] ?? '') }}"></td>
-                                                <td><input type="text" name="cooking[{{ $i }}][tindakan]" class="form-control" value="{{ old("cooking.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            {{-- Filling --}}
-                            <div class="tab-pane fade" id="filling">
-                                @php
-                                $lokasiList = [
-                                'Lantai','Dinding','Pintu','Langit-langit', 'AC', 'Saluran Air Buangan', 'Lampu dan Cover', 'Filling Machine', 'Vacuum Cooling Machine', 'Sealer 1', 'Sealer 2', 'Filler Manual 1', 'Filler Manual 2'
-                                ];
-                                $filled = $kebersihan_ruang->filling ?? [];
-                                @endphp
-
-                                {{-- Jam Pemeriksaan (satu field saja) --}}
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
-                                    <input 
-                                    type="time" 
-                                    name="filling[jam]" 
-                                    class="form-control"
-                                    value="{{ old('filling.jam', $kebersihan_ruang->filling['jam'] ?? '') }}">
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table class="table table-bordered align-middle">
-                                        <thead class="table-info text-center">
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Kondisi</th>
-                                                <th>Masalah</th>
-                                                <th>Tindakan Koreksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($lokasiList as $i => $lokasi)
-                                            @php
-                                            $row = $filled[$i] ?? [];
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $lokasi }}
-                                                    <input type="hidden" name="filling[{{ $i }}][lokasi]" value="{{ $lokasi }}">
-                                                </td>
-                                                <td>
-                                                    <select name="filling[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
-                                                        <option value="{{ $option }}" {{ (old("filling.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
-                                                            {{ $option }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="filling[{{ $i }}][masalah]" class="form-control" value="{{ old("filling.$i.masalah", $row['masalah'] ?? '') }}"></td>
-                                                <td><input type="text" name="filling[{{ $i }}][tindakan]" class="form-control" value="{{ old("filling.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            {{-- Topping --}}
-                            <div class="tab-pane fade" id="topping">
-                                @php
-                                $lokasiList = [
-                                'Lantai','Dinding','Pintu','Langit-langit', 'AC', 'Saluran Air Buangan', 'Lampu dan Cover',
-                                ];
-                                $top = $kebersihan_ruang->topping ?? [];
-                                @endphp
-
-                                {{-- Jam Pemeriksaan (satu field saja) --}}
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
-                                    <input 
-                                    type="time" 
-                                    name="topping[jam]" 
-                                    class="form-control"
-                                    value="{{ old('topping.jam', $kebersihan_ruang->topping['jam'] ?? '') }}">
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table class="table table-bordered align-middle">
-                                        <thead class="table-info text-center">
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Kondisi</th>
-                                                <th>Masalah</th>
-                                                <th>Tindakan Koreksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($lokasiList as $i => $lokasi)
-                                            @php
-                                            $row = $top[$i] ?? [];
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $lokasi }}
-                                                    <input type="hidden" name="topping[{{ $i }}][lokasi]" value="{{ $lokasi }}">
-                                                </td>
-                                                <td>
-                                                    <select name="topping[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
-                                                        <option value="{{ $option }}" {{ (old("topping.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
-                                                            {{ $option }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="topping[{{ $i }}][masalah]" class="form-control" value="{{ old("topping.$i.masalah", $row['masalah'] ?? '') }}"></td>
-                                                <td><input type="text" name="topping[{{ $i }}][tindakan]" class="form-control" value="{{ old("topping.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            {{-- Packing --}}
-                            <div class="tab-pane fade" id="packing">
-                                @php
-                                $lokasiList = [
-                                'Lantai','Dinding','Pintu','Langit-langit', 'AC', 'Saluran Air Buangan', 'Lampu dan Cover', 'Packing Machine', 'Tray Sealer', 'Metal Detector & Rejector', 'X-Ray Detector & Rejector', 'Line Conveyor', 'Inkjet Printer Plastic'
-                                ];
-                                $pack = $kebersihan_ruang->packing ?? [];
-                                @endphp
-
-                                {{-- Jam Pemeriksaan (satu field saja) --}}
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
-                                    <input 
-                                    type="time" 
-                                    name="packing[jam]" 
-                                    class="form-control"
-                                    value="{{ old('packing.jam', $kebersihan_ruang->packing['jam'] ?? '') }}">
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table class="table table-bordered align-middle">
-                                        <thead class="table-info text-center">
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Kondisi</th>
-                                                <th>Masalah</th>
-                                                <th>Tindakan Koreksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($lokasiList as $i => $lokasi)
-                                            @php
-                                            $row = $pack[$i] ?? [];
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $lokasi }}
-                                                    <input type="hidden" name="packing[{{ $i }}][lokasi]" value="{{ $lokasi }}">
-                                                </td>
-                                                <td>
-                                                    <select name="packing[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
-                                                        <option value="{{ $option }}" {{ (old("packing.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
-                                                            {{ $option }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="packing[{{ $i }}][masalah]" class="form-control" value="{{ old("packing.$i.masalah", $row['masalah'] ?? '') }}"></td>
-                                                <td><input type="text" name="packing[{{ $i }}][tindakan]" class="form-control" value="{{ old("packing.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            {{-- IQF --}}
-                            <div class="tab-pane fade" id="iqf">
-                                @php
-                                $lokasiList = [
-                                'Dinding Luar','Dinding Dalam','Ruang Dalam IQF','Conveyor IQF'
-                                ];
-                                $freezer = $kebersihan_ruang->iqf ?? [];
-                                @endphp
-                                
-                                {{-- Jam Pemeriksaan (satu field saja) --}}
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
-                                    <input 
-                                    type="time" 
-                                    name="iqf[jam]" 
-                                    class="form-control"
-                                    value="{{ old('iqf.jam', $kebersihan_ruang->iqf['jam'] ?? '') }}">
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table class="table table-bordered align-middle">
-                                        <thead class="table-info text-center">
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Kondisi</th>
-                                                <th>Masalah</th>
-                                                <th>Tindakan Koreksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($lokasiList as $i => $lokasi)
-                                            @php
-                                            $row = $freezer[$i] ?? [];
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $lokasi }}
-                                                    <input type="hidden" name="iqf[{{ $i }}][lokasi]" value="{{ $lokasi }}">
-                                                </td>
-                                                <td>
-                                                    <select name="iqf[{{ $i }}][kondisi]" class="form-control form-select">
-                                                        @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda','Mikroorganisme'] as $option)
-                                                        <option value="{{ $option }}" {{ (old("iqf.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
-                                                            {{ $option }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" name="iqf[{{ $i }}][masalah]" class="form-control" value="{{ old("iqf.$i.masalah", $row['masalah'] ?? '') }}"></td>
-                                                <td><input type="text" name="iqf[{{ $i }}][tindakan]" class="form-control" value="{{ old("iqf.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
+                            <div class="table-responsive">
+                                <table class="table table-bordered align-middle">
+                                    <thead class="table-info text-center">
+                                        <tr>
+                                            <th>Lokasi</th>
+                                            <th>Kondisi</th>
+                                            <th>Masalah</th>
+                                            <th>Tindakan Koreksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($lokasiList as $i => $lokasi)
+                                        @php
+                                        $row = $season[$i] ?? [];
+                                        @endphp
+                                        <tr>
+                                            <td class="text-center">
+                                                {{ $lokasi }}
+                                                <input type="hidden" name="seasoning[{{ $i }}][lokasi]" value="{{ $lokasi }}">
+                                            </td>
+                                            <td>
+                                                <select name="seasoning[{{ $i }}][kondisi]" class="form-control form-select">
+                                                 @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
+                                                 <option value="{{ $option }}" {{ (old("seasoning.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
+                                                    {{ $option }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td><input type="text" name="seasoning[{{ $i }}][masalah]" class="form-control" value="{{ old("seasoning.$i.masalah", $row['masalah'] ?? '') }}"></td>
+                                        <td><input type="text" name="seasoning[{{ $i }}][tindakan]" class="form-control" value="{{ old("seasoning.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                </div>
 
-                {{-- Notes --}}
-                <div class="card mb-3">
-                    <div class="card-header bg-light">
-                        <strong>Catatan</strong>
+                    {{-- CS FG --}}
+                    <div class="tab-pane fade" id="cs-fg">
+                        @php
+                        $lokasiList = [
+                        'Lantai','Dinding','Kurtain','Pintu','Langit-langit','AC','Rak Penampung Produk'
+                        ];
+                        $csFg = $kebersihan_ruang->cs_fg ?? [];
+                        @endphp
+
+                        {{-- Jam Pemeriksaan (satu field saja) --}}
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
+                            <input 
+                            type="time" 
+                            name="cs_fg[jam]" 
+                            class="form-control"
+                            value="{{ old('cs_fg.jam', $kebersihan_ruang->cs_fg['jam'] ?? '') }}">
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-info text-center">
+                                    <tr>
+                                        <th>Lokasi</th>
+                                        <th>Kondisi</th>
+                                        <th>Masalah</th>
+                                        <th>Tindakan Koreksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($lokasiList as $i => $lokasi)
+                                    @php
+                                    $row = $csFg[$i] ?? [];
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center">
+                                            {{ $lokasi }}
+                                            <input type="hidden" name="cs_fg[{{ $i }}][lokasi]" value="{{ $lokasi }}">
+                                        </td>
+                                        <td>
+                                            <select name="cs_fg[{{ $i }}][kondisi]" class="form-control form-select">
+                                               @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
+                                               <option value="{{ $option }}" {{ (old("cs_fg.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
+                                                {{ $option }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td><input type="text" name="cs_fg[{{ $i }}][masalah]" class="form-control" value="{{ old("cs_fg.$i.masalah", $row['masalah'] ?? '') }}"></td>
+                                    <td><input type="text" name="cs_fg[{{ $i }}][tindakan]" class="form-control" value="{{ old("cs_fg.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="card-body">
-                        <textarea name="catatan" class="form-control" rows="3">{{ old('catatan', $kebersihan_ruang->catatan) }}</textarea>
+                </div>
+
+                {{-- DS --}}
+                <div class="tab-pane fade" id="ds">
+                    @php
+                    $lokasiList = [
+                    'Lantai','Dinding','Kurtain','Pintu','Langit-langit','AC','Rak Penampung Produk', 'Terdapat Tagging', 'Lampu dan Cover'
+                    ];                                
+                    $dryStore = $kebersihan_ruang->ds ?? [];
+                    @endphp
+
+                    {{-- Jam Pemeriksaan (satu field saja) --}}
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
+                        <input 
+                        type="time" 
+                        name="ds[jam]" 
+                        class="form-control"
+                        value="{{ old('ds.jam', $kebersihan_ruang->ds['jam'] ?? '') }}">
                     </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-info text-center">
+                                <tr>
+                                    <th>Lokasi</th>
+                                    <th>Kondisi</th>
+                                    <th>Masalah</th>
+                                    <th>Tindakan Koreksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($lokasiList as $i => $lokasi)
+                                @php
+                                $row = $dryStore[$i] ?? [];
+                                @endphp
+                                <tr>
+                                    <td class="text-center">
+                                        {{ $lokasi }}
+                                        <input type="hidden" name="ds[{{ $i }}][lokasi]" value="{{ $lokasi }}">
+                                    </td>
+                                    <td>
+                                        <select name="ds[{{ $i }}][kondisi]" class="form-control form-select">
+                                         @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
+                                         <option value="{{ $option }}" {{ (old("ds.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
+                                            {{ $option }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td><input type="text" name="ds[{{ $i }}][masalah]" class="form-control" value="{{ old("ds.$i.masalah", $row['masalah'] ?? '') }}"></td>
+                                <td><input type="text" name="ds[{{ $i }}][tindakan]" class="form-control" value="{{ old("ds.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {{-- Prep Room --}}
+            <div class="tab-pane fade" id="prep-room">
+                @php
+                $lokasiList = [
+                'Lantai','Dinding','Pintu','Langit-langit', 'Saluran Air Buangan', 'Lampu dan Cover', 'Vegetable Washing Machine', 'Slicer', 'Peeling Machine', 'Vacuum Tumbler'
+                ];
+                $prepRoom = $kebersihan_ruang->prep_room ?? [];
+                @endphp
+
+                {{-- Jam Pemeriksaan (satu field saja) --}}
+                <div class="mb-3">
+                    <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
+                    <input 
+                    type="time" 
+                    name="prep_room[jam]" 
+                    class="form-control"
+                    value="{{ old('prep_room.jam', $kebersihan_ruang->prep_room['jam'] ?? '') }}">
                 </div>
 
-                {{-- Tombol --}}
-                <div class="d-flex justify-content-between mt-3">
-                    <button class="btn btn-primary w-auto">
-                        <i class="bi bi-save"></i> Update
-                    </button>
-                    <a href="{{ route('kebersihan_ruang.index') }}" class="btn btn-secondary w-auto">
-                        <i class="bi bi-arrow-left"></i> Kembali
-                    </a>
-                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-info text-center">
+                            <tr>
+                                <th>Lokasi</th>
+                                <th>Kondisi</th>
+                                <th>Masalah</th>
+                                <th>Tindakan Koreksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($lokasiList as $i => $lokasi)
+                            @php
+                            $row = $prepRoom[$i] ?? [];
+                            @endphp
+                            <tr>
+                                <td class="text-center">
+                                    {{ $lokasi }}
+                                    <input type="hidden" name="prep_room[{{ $i }}][lokasi]" value="{{ $lokasi }}">
+                                </td>
+                                <td>
+                                    <select name="prep_room[{{ $i }}][kondisi]" class="form-control form-select">
+                                       @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
+                                       <option value="{{ $option }}" {{ (old("prep_room.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
+                                        {{ $option }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td><input type="text" name="prep_room[{{ $i }}][masalah]" class="form-control" value="{{ old("prep_room.$i.masalah", $row['masalah'] ?? '') }}"></td>
+                            <td><input type="text" name="prep_room[{{ $i }}][tindakan]" class="form-control" value="{{ old("prep_room.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-            </form>
+        {{-- Cooking --}}
+        <div class="tab-pane fade" id="cooking">
+            @php
+            $lokasiList = [
+            'Lantai','Dinding','Pintu','Langit-langit', 'Saluran Air Buangan', 'Lampu dan Cover', 'Alco Cooking Mixer', 'Tilting Kettle', 'Exhaust', 'Stir Fryer (Provisur)', 'Steamer', 'Bowl Cutter'
+            ];
+            $cook = $kebersihan_ruang->cooking ?? [];
+            @endphp
+
+            {{-- Jam Pemeriksaan (satu field saja) --}}
+            <div class="mb-3">
+                <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
+                <input 
+                type="time" 
+                name="cookingjam]" 
+                class="form-control"
+                value="{{ old('cooking.jam', $kebersihan_ruang->cooking['jam'] ?? '') }}">
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-info text-center">
+                        <tr>
+                            <th>Lokasi</th>
+                            <th>Kondisi</th>
+                            <th>Masalah</th>
+                            <th>Tindakan Koreksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($lokasiList as $i => $lokasi)
+                        @php
+                        $row = $cook[$i] ?? [];
+                        @endphp
+                        <tr>
+                            <td class="text-center">
+                                {{ $lokasi }}
+                                <input type="hidden" name="cooking[{{ $i }}][lokasi]" value="{{ $lokasi }}">
+                            </td>
+                            <td>
+                                <select name="cooking[{{ $i }}][kondisi]" class="form-control form-select">
+                                    @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
+                                    <option value="{{ $option }}" {{ (old("cooking.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
+                                        {{ $option }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td><input type="text" name="cooking[{{ $i }}][masalah]" class="form-control" value="{{ old("cooking.$i.masalah", $row['masalah'] ?? '') }}"></td>
+                            <td><input type="text" name="cooking[{{ $i }}][tindakan]" class="form-control" value="{{ old("cooking.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {{-- Filling --}}
+        <div class="tab-pane fade" id="filling">
+            @php
+            $lokasiList = [
+            'Lantai','Dinding','Pintu','Langit-langit', 'AC', 'Saluran Air Buangan', 'Lampu dan Cover', 'Filling Machine', 'Vacuum Cooling Machine', 'Sealer 1', 'Sealer 2', 'Filler Manual 1', 'Filler Manual 2'
+            ];
+            $filled = $kebersihan_ruang->filling ?? [];
+            @endphp
+
+            {{-- Jam Pemeriksaan (satu field saja) --}}
+            <div class="mb-3">
+                <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
+                <input 
+                type="time" 
+                name="filling[jam]" 
+                class="form-control"
+                value="{{ old('filling.jam', $kebersihan_ruang->filling['jam'] ?? '') }}">
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-info text-center">
+                        <tr>
+                            <th>Lokasi</th>
+                            <th>Kondisi</th>
+                            <th>Masalah</th>
+                            <th>Tindakan Koreksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($lokasiList as $i => $lokasi)
+                        @php
+                        $row = $filled[$i] ?? [];
+                        @endphp
+                        <tr>
+                            <td class="text-center">
+                                {{ $lokasi }}
+                                <input type="hidden" name="filling[{{ $i }}][lokasi]" value="{{ $lokasi }}">
+                            </td>
+                            <td>
+                                <select name="filling[{{ $i }}][kondisi]" class="form-control form-select">
+                                 @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
+                                 <option value="{{ $option }}" {{ (old("filling.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
+                                    {{ $option }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td><input type="text" name="filling[{{ $i }}][masalah]" class="form-control" value="{{ old("filling.$i.masalah", $row['masalah'] ?? '') }}"></td>
+                        <td><input type="text" name="filling[{{ $i }}][tindakan]" class="form-control" value="{{ old("filling.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
+
+    {{-- Topping --}}
+    <div class="tab-pane fade" id="topping">
+        @php
+        $lokasiList = [
+        'Lantai','Dinding','Pintu','Langit-langit', 'AC', 'Saluran Air Buangan', 'Lampu dan Cover',
+        ];
+        $top = $kebersihan_ruang->topping ?? [];
+        @endphp
+
+        {{-- Jam Pemeriksaan (satu field saja) --}}
+        <div class="mb-3">
+            <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
+            <input 
+            type="time" 
+            name="topping[jam]" 
+            class="form-control"
+            value="{{ old('topping.jam', $kebersihan_ruang->topping['jam'] ?? '') }}">
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-info text-center">
+                    <tr>
+                        <th>Lokasi</th>
+                        <th>Kondisi</th>
+                        <th>Masalah</th>
+                        <th>Tindakan Koreksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($lokasiList as $i => $lokasi)
+                    @php
+                    $row = $top[$i] ?? [];
+                    @endphp
+                    <tr>
+                        <td class="text-center">
+                            {{ $lokasi }}
+                            <input type="hidden" name="topping[{{ $i }}][lokasi]" value="{{ $lokasi }}">
+                        </td>
+                        <td>
+                            <select name="topping[{{ $i }}][kondisi]" class="form-control form-select">
+                                @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
+                                <option value="{{ $option }}" {{ (old("topping.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
+                                    {{ $option }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td><input type="text" name="topping[{{ $i }}][masalah]" class="form-control" value="{{ old("topping.$i.masalah", $row['masalah'] ?? '') }}"></td>
+                        <td><input type="text" name="topping[{{ $i }}][tindakan]" class="form-control" value="{{ old("topping.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{-- Packing --}}
+    <div class="tab-pane fade" id="packing">
+        @php
+        $lokasiList = [
+        'Lantai','Dinding','Pintu','Langit-langit', 'AC', 'Saluran Air Buangan', 'Lampu dan Cover', 'Packing Machine', 'Tray Sealer', 'Metal Detector & Rejector', 'X-Ray Detector & Rejector', 'Line Conveyor', 'Inkjet Printer Plastic'
+        ];
+        $pack = $kebersihan_ruang->packing ?? [];
+        @endphp
+
+        {{-- Jam Pemeriksaan (satu field saja) --}}
+        <div class="mb-3">
+            <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
+            <input 
+            type="time" 
+            name="packing[jam]" 
+            class="form-control"
+            value="{{ old('packing.jam', $kebersihan_ruang->packing['jam'] ?? '') }}">
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-info text-center">
+                    <tr>
+                        <th>Lokasi</th>
+                        <th>Kondisi</th>
+                        <th>Masalah</th>
+                        <th>Tindakan Koreksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($lokasiList as $i => $lokasi)
+                    @php
+                    $row = $pack[$i] ?? [];
+                    @endphp
+                    <tr>
+                        <td class="text-center">
+                            {{ $lokasi }}
+                            <input type="hidden" name="packing[{{ $i }}][lokasi]" value="{{ $lokasi }}">
+                        </td>
+                        <td>
+                            <select name="packing[{{ $i }}][kondisi]" class="form-control form-select">
+                             @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
+                             <option value="{{ $option }}" {{ (old("packing.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
+                                {{ $option }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td><input type="text" name="packing[{{ $i }}][masalah]" class="form-control" value="{{ old("packing.$i.masalah", $row['masalah'] ?? '') }}"></td>
+                    <td><input type="text" name="packing[{{ $i }}][tindakan]" class="form-control" value="{{ old("packing.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{-- IQF --}}
+<div class="tab-pane fade" id="iqf">
+    @php
+    $lokasiList = [
+    'Dinding Luar','Dinding Dalam','Ruang Dalam IQF','Conveyor IQF'
+    ];
+    $freezer = $kebersihan_ruang->iqf ?? [];
+    @endphp
+    
+    {{-- Jam Pemeriksaan (satu field saja) --}}
+    <div class="mb-3">
+        <label class="form-label"><strong>Jam Pemeriksaan</strong></label>
+        <input 
+        type="time" 
+        name="iqf[jam]" 
+        class="form-control"
+        value="{{ old('iqf.jam', $kebersihan_ruang->iqf['jam'] ?? '') }}">
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+            <thead class="table-info text-center">
+                <tr>
+                    <th>Lokasi</th>
+                    <th>Kondisi</th>
+                    <th>Masalah</th>
+                    <th>Tindakan Koreksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($lokasiList as $i => $lokasi)
+                @php
+                $row = $freezer[$i] ?? [];
+                @endphp
+                <tr>
+                    <td class="text-center">
+                        {{ $lokasi }}
+                        <input type="hidden" name="iqf[{{ $i }}][lokasi]" value="{{ $lokasi }}">
+                    </td>
+                    <td>
+                        <select name="iqf[{{ $i }}][kondisi]" class="form-control form-select">
+                            @foreach(['Bersih','Berdebu','Basah','Pecah/retak','Sisa produksi','Noda seperti tinta, karat, kerak','Pertumbuhan Mikroorganisme','Bunga es'] as $option)
+                            <option value="{{ $option }}" {{ (old("iqf.$i.kondisi", $row['kondisi'] ?? '') == $option) ? 'selected' : '' }}>
+                                {{ $option }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td><input type="text" name="iqf[{{ $i }}][masalah]" class="form-control" value="{{ old("iqf.$i.masalah", $row['masalah'] ?? '') }}"></td>
+                    <td><input type="text" name="iqf[{{ $i }}][tindakan]" class="form-control" value="{{ old("iqf.$i.tindakan", $row['tindakan'] ?? '') }}"></td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+
+{{-- Notes --}}
+<div class="card mb-3">
+    <div class="card-header bg-light">
+        <strong>Catatan</strong>
+    </div>
+    <div class="card-body">
+        <textarea name="catatan" class="form-control" rows="3">{{ old('catatan', $kebersihan_ruang->catatan) }}</textarea>
+    </div>
+</div>
+
+{{-- Tombol --}}
+<div class="d-flex justify-content-between mt-3">
+    <button class="btn btn-primary w-auto">
+        <i class="bi bi-save"></i> Update
+    </button>
+    <a href="{{ route('kebersihan_ruang.index') }}" class="btn btn-secondary w-auto">
+        <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+</div>
+
+</form>
+</div>
+</div>
 </div>
 @endsection

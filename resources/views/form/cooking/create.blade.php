@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- jQuery dulu (wajib) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap-Select CSS & JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
 <div class="container-fluid py-4">
     <div class="card shadow-sm">
         <div class="card-body">
@@ -47,6 +53,13 @@
                                     <option value="">-- Pilih Sub Produk --</option>
                                     <option value="Saus">Saus</option>
                                     <option value="Daging">Daging</option>
+                                    <option value="Sambal Hijau">Sambal Hijau</option>
+                                    <option value="Daun Singkong">Daun Singkong</option>
+                                    <option value="Kentang Balado">Kentang Balado</option>
+                                    <option value="Sambel Merah">Sambel Merah</option>
+                                    <option value="Toping Ayam Jamur">Toping Ayam Jamur</option>
+                                    <option value="Saus Kecap">Saus Kecap</option>
+                                    <option value="Minyak Bawang">Minyak Bawang</option>
                                 </select>
                             </div>
                         </div>
@@ -57,7 +70,7 @@
                                     <option value="">-- Pilih Jenis Produk --</option>
                                     <option value="RTS">RTS (Ready to Serve)</option>
                                     <option value="RTM">RTM (Ready to Meal)</option>
-                                    <option value="Ramen">Ramen</option>
+                                    <option value="Institusi">Institusi</option>
                                     <option value="Yoshinoya">Yoshinoya</option>
                                 </select>
                             </div>
@@ -75,167 +88,169 @@
                                     <input type="time" id="waktu_selesai" name="waktu_selesai" class="form-control">
                                 </div>
                             </div>
+
                             <div class="col-md-6">
-                                <label class="form-label">Mesin</label>
-                                <select id="nama_mesin" name="nama_mesin" class="form-control" required>
-                                    <option value="">-- Pilih Nama Mesin --</option>
-                                    <option value="Provisur">Provisur</option>
-                                    <option value="Kettle">Kettle</option>
+                              <label class="form-label">Mesin</label>
+                              <select id="nama_mesin" name="nama_mesin[]" 
+                              class="selectpicker" 
+                              multiple 
+                              data-live-search="true"
+                              title="-- Pilih Nama Mesin --"
+                              data-width="100%">
+                              <option value="Provisur">Provisur</option>
+                              <option value="Kettle Api">Kettle Api</option>
+                              <option value="Kettle Steam">Kettle Steam</option>
+                              <option value="Kettle Alco">Alco</option>
+                          </select>
+                      </div>
+
+                  </div>
+              </div>
+          </div>
+
+          {{-- Bagian Pemeriksaan Cooking --}}
+          <div class="card mb-4">
+            <div class="card-body">
+
+                {{-- Catatan Checkbox --}}
+                <div class="alert alert-danger mt-2 py-2 px-3" style="font-size: 0.9rem;">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Catatan:</strong>  
+                    <i class="bi bi-check-circle text-success"></i> Checkbox apabila hasil <u>Oke</u>.  
+                    Kosongkan Checkbox apabila hasil <u>Tidak Oke</u>.  
+                </div>
+
+                <div class="table-responsive">
+                    <table id="cookingTable">
+                       <thead class="table-light align-middle">
+                        <tr>
+                            <th rowspan="2">Pukul</th>
+                            <th rowspan="2">Tahapan Proses</th>
+                            <th colspan="4">Bahan Baku</th>
+                            <th colspan="7">Parameter Pemasakan</th>
+                            <th colspan="6">Produk</th>
+                            <th rowspan="2">Catatan</th>
+                            <th rowspan="2">Action</th>
+                        </tr>
+                        <tr>
+                            <!-- Bahan Baku -->
+                            <th>Jenis Bahan</th>
+                            <th>Kode Bahan</th>
+                            <th>Jumlah Standar (Kg)</th>
+                            <th>Jumlah Aktual (Kg)</th>
+
+                            <!-- Parameter Pemasakan -->
+                            <th>Sensori</th>
+                            <th>Lama Proses<br>(menit)</th>
+                            <th>Mixing Paddle On</th>
+                            <th>Mixing Paddle Off</th>
+                            <th>Pressure (Bar)</th>
+                            <th>Temperature (°C / Api)</th>
+                            <th>Target Temp (°C)</th>
+                            <th>Actual Temp (°C)</th>
+
+                            <!-- Produk -->
+                            <th>Suhu Pusat Produk<br>Setelah 1/30* Menit (°C)</th>
+                            <th>Warna</th>
+                            <th>Aroma</th>
+                            <th>Rasa</th>
+                            <th>Tekstur</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="pemeriksaan">
+                        @for($i=1; $i<=10; $i++)
+                        <tr>
+                            @if($i==1)
+                            <td rowspan="10"><input type="time" name="pemasakan[0][pukul]" class="form-control form-control-sm"></td>
+                            <td rowspan="10"><input type="text" name="pemasakan[0][tahapan]" class="form-control form-control-sm"></td>
+                            @endif
+
+                            <td><input type="text" name="pemasakan[0][jenis_bahan][]" class="form-control form-control-sm"></td>
+                            <td><input type="text" name="pemasakan[0][kode_bahan][]" class="form-control form-control-sm"></td>
+                            <td><input type="number" step="0.01" name="pemasakan[0][jumlah_standar][]" class="form-control form-control-sm"></td>
+                            <td><input type="number" step="0.01" name="pemasakan[0][jumlah_aktual][]" class="form-control form-control-sm"></td>
+                            <td>
+                              <input type="checkbox" class="big-checkbox" 
+                              name="pemasakan[0][sensori][]" 
+                              value="Oke" 
+                              {{ !empty($p['sensori'][$i]) && $p['sensori'][$i]=='Oke' ? 'checked' : '' }}>
+                          </td>
+
+                          @if($i==1)
+                          <td rowspan="10"><input type="number" step="0.01" name="pemasakan[0][lama_proses]" class="form-control form-control-sm"></td>
+                          <td rowspan="10"><input type="checkbox" class="big-checkbox" name="pemasakan[0][paddle_on]" value="1"></td>
+                          <td rowspan="10"><input type="checkbox" class="big-checkbox" name="pemasakan[0][paddle_off]" value="1"></td>
+                          <td rowspan="10"><input type="number" step="0.01" name="pemasakan[0][pressure]" class="form-control form-control-sm"></td>
+                          <td rowspan="10"><input type="text" name="pemasakan[0][temperature]" class="form-control form-control-sm"></td>
+                          <td rowspan="10"><input type="number" step="0.01" name="pemasakan[0][target_temp]" class="form-control form-control-sm"></td>
+                          <td rowspan="10"><input type="number" step="0.01" name="pemasakan[0][actual_temp]" class="form-control form-control-sm"></td>
+                          <td rowspan="10">
+                            <div class="input-group input-group-sm">
+                                <input type="number" step="0.01" name="pemasakan[0][suhu_pusat]" class="form-control">
+                                <select name="pemasakan[0][suhu_pusat_menit]" class="form-select">
+                                    <option value="1">1 Menit</option>
+                                    <option value="30">30 Menit</option>
                                 </select>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Bagian Pemeriksaan Cooking --}}
-                <div class="card mb-4">
-                    <div class="card-body">
-
-                        {{-- Catatan Checkbox --}}
-                        <div class="alert alert-danger mt-2 py-2 px-3" style="font-size: 0.9rem;">
-                            <i class="bi bi-info-circle"></i>
-                            <strong>Catatan:</strong>  
-                            <i class="bi bi-check-circle text-success"></i> Checkbox apabila hasil <u>Oke</u>.  
-                            Kosongkan Checkbox apabila hasil <u>Tidak Oke</u>.  
-                        </div>
-
-                        <div class="table-responsive">
-                            <table id="cookingTable">
-                             <thead class="table-light align-middle">
-                                <tr>
-                                    <th rowspan="2">Pukul</th>
-                                    <th rowspan="2">Tahapan Proses</th>
-                                    <th colspan="4">Bahan Baku</th>
-                                    <th colspan="7">Parameter Pemasakan</th>
-                                    <th colspan="6">Produk</th>
-                                    <th rowspan="2">Catatan</th>
-                                    <th rowspan="2">Action</th>
-                                </tr>
-                                <tr>
-                                    <!-- Bahan Baku -->
-                                    <th>Jenis Bahan</th>
-                                    <th>Kode Bahan</th>
-                                    <th>Jumlah Standar (Kg)</th>
-                                    <th>Jumlah Aktual (Kg)</th>
-
-                                    <!-- Parameter Pemasakan -->
-                                    <th>Sensori</th>
-                                    <th>Lama Proses<br>(menit)</th>
-                                    <th>Mixing Paddle On</th>
-                                    <th>Mixing Paddle Off</th>
-                                    <th>Pressure (Bar)</th>
-                                    <th>Temperature (°C / Api)</th>
-                                    <th>Target Temp (°C)</th>
-                                    <th>Actual Temp (°C)</th>
-
-                                    <!-- Produk -->
-                                    <th>Suhu Pusat Produk<br>Setelah 1/30* Menit (°C)</th>
-                                    <th>Warna</th>
-                                    <th>Aroma</th>
-                                    <th>Rasa</th>
-                                    <th>Tekstur</th>
-                                </tr>
-                            </thead>
-
-
-                            <tbody class="pemeriksaan">
-                                @for($i=1; $i<=10; $i++)
-                                <tr>
-                                    @if($i==1)
-                                    <td rowspan="10"><input type="time" name="pemasakan[0][pukul]" class="form-control form-control-sm"></td>
-                                    <td rowspan="10"><input type="text" name="pemasakan[0][tahapan]" class="form-control form-control-sm"></td>
-                                    @endif
-
-                                    <td><input type="text" name="pemasakan[0][jenis_bahan][]" class="form-control form-control-sm"></td>
-                                    <td><input type="text" name="pemasakan[0][kode_bahan][]" class="form-control form-control-sm"></td>
-                                    <td><input type="number" step="0.01" name="pemasakan[0][jumlah_standar][]" class="form-control form-control-sm"></td>
-                                    <td><input type="number" step="0.01" name="pemasakan[0][jumlah_aktual][]" class="form-control form-control-sm"></td>
-                                    <td>
-                                      <input type="checkbox" class="big-checkbox" 
-                                      name="pemasakan[0][sensori][]" 
-                                      value="Oke" 
-                                      {{ !empty($p['sensori'][$i]) && $p['sensori'][$i]=='Oke' ? 'checked' : '' }}>
-                                  </td>
-
-                                  @if($i==1)
-                                  <td rowspan="10"><input type="number" step="0.01" name="pemasakan[0][lama_proses]" class="form-control form-control-sm"></td>
-                                  <td rowspan="10"><input type="checkbox" class="big-checkbox" name="pemasakan[0][paddle_on]" value="1"></td>
-                                  <td rowspan="10"><input type="checkbox" class="big-checkbox" name="pemasakan[0][paddle_off]" value="1"></td>
-                                  <td rowspan="10"><input type="number" step="0.01" name="pemasakan[0][pressure]" class="form-control form-control-sm"></td>
-                                  <td rowspan="10"><input type="text" name="pemasakan[0][temperature]" class="form-control form-control-sm"></td>
-                                  <td rowspan="10"><input type="number" step="0.01" name="pemasakan[0][target_temp]" class="form-control form-control-sm"></td>
-                                  <td rowspan="10"><input type="number" step="0.01" name="pemasakan[0][actual_temp]" class="form-control form-control-sm"></td>
-                                  <td rowspan="10">
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" step="0.01" name="pemasakan[0][suhu_pusat]" class="form-control">
-                                        <select name="pemasakan[0][suhu_pusat_menit]" class="form-select">
-                                            <option value="1">1 Menit</option>
-                                            <option value="30">30 Menit</option>
-                                        </select>
-                                    </div>
-                                </td>
-                                <td rowspan="10"><input type="checkbox" class="big-checkbox" name="pemasakan[0][warna]" value="Oke"></td>
-                                <td rowspan="10"><input type="checkbox" class="big-checkbox" name="pemasakan[0][aroma]" value="Oke"></td>
-                                <td rowspan="10"><input type="checkbox" class="big-checkbox" name="pemasakan[0][rasa]" value="Oke"></td>
-                                <td rowspan="10"><input type="checkbox" class="big-checkbox" name="pemasakan[0][tekstur]" value="Oke"></td>
-                                <td rowspan="10"><input type="text" name="pemasakan[0][catatan]" class="form-control form-control-sm"></td>
-                                <td rowspan="10">
-                                    {{-- Tombol hapus, disembunyikan untuk pemeriksaan pertama --}}
-                                    <button type="button" class="btn btn-danger btn-sm btn-hapus d-none">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                                @endif
-                            </tr>
-                            @endfor
-                        </tbody>
-                    </table>
-                </div>
-
-                {{-- Tombol tambah --}}
-                <button type="button" class="btn btn-primary btn-sm mt-2" id="btnTambahPemeriksaan">
-                    <i class="bi bi-plus-circle"></i> Tambah Pemeriksaan
-                </button>
-            </div>
+                        </td>
+                        <td rowspan="10"><input type="checkbox" class="big-checkbox" name="pemasakan[0][warna]" value="Oke"></td>
+                        <td rowspan="10"><input type="checkbox" class="big-checkbox" name="pemasakan[0][aroma]" value="Oke"></td>
+                        <td rowspan="10"><input type="checkbox" class="big-checkbox" name="pemasakan[0][rasa]" value="Oke"></td>
+                        <td rowspan="10"><input type="checkbox" class="big-checkbox" name="pemasakan[0][tekstur]" value="Oke"></td>
+                        <td rowspan="10"><input type="text" name="pemasakan[0][catatan]" class="form-control form-control-sm"></td>
+                        <td rowspan="10">
+                            {{-- Tombol hapus, disembunyikan untuk pemeriksaan pertama --}}
+                            <button type="button" class="btn btn-danger btn-sm btn-hapus d-none">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                        @endif
+                    </tr>
+                    @endfor
+                </tbody>
+            </table>
         </div>
 
+        {{-- Tombol tambah --}}
+        <button type="button" class="btn btn-primary btn-sm mt-2" id="btnTambahPemeriksaan">
+            <i class="bi bi-plus-circle"></i> Tambah Pemeriksaan
+        </button>
+    </div>
+</div>
 
-        {{-- Catatan --}}
-        <div class="card mb-4">
-            <div class="card-header bg-light">
-                <strong>Catatan</strong>
-            </div>
-            <div class="card-body">
-                <textarea name="catatan" class="form-control" rows="3"
-                placeholder="Tambahkan catatan bila ada">{{ old('catatan', $data->catatan ?? '') }}</textarea>
-            </div>
-        </div>`
 
-        {{-- Tombol --}}
-        <div class="d-flex justify-content-between mt-3">
-            <button class="btn btn-success w-auto">
-                <i class="bi bi-save"></i> Simpan
-            </button>
-            <a href="{{ route('cooking.index') }}" class="btn btn-secondary w-auto">
-                <i class="bi bi-arrow-left"></i> Kembali
-            </a>
-        </div>
-    </form>
+{{-- Catatan --}}
+<div class="card mb-4">
+    <div class="card-header bg-light">
+        <strong>Catatan</strong>
+    </div>
+    <div class="card-body">
+        <textarea name="catatan" class="form-control" rows="3"
+        placeholder="Tambahkan catatan bila ada">{{ old('catatan', $data->catatan ?? '') }}</textarea>
+    </div>
+</div>
+
+{{-- Tombol --}}
+<div class="d-flex justify-content-between mt-3">
+    <button class="btn btn-success w-auto">
+        <i class="bi bi-save"></i> Simpan
+    </button>
+    <a href="{{ route('cooking.index') }}" class="btn btn-secondary w-auto">
+        <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+</div>
+</form>
 </div>
 </div>
 </div>
-<!-- jQuery dulu (wajib) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Bootstrap-Select CSS & JS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
 
 <script>
     $(document).ready(function(){
         $('.selectpicker').selectpicker();
     });
 </script>
+
 <style>
     /* Checkbox besar */
     .big-checkbox {
@@ -333,7 +348,6 @@
 
     });
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     document.getElementById('btnTambahPemeriksaan').addEventListener('click', function() {
         let table = document.getElementById('cookingTable');

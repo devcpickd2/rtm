@@ -23,7 +23,6 @@ class Kebersihan_ruangController extends Controller
             $query->whereBetween('date', [$start_date, $end_date]);
         })
         ->orderBy('date', 'desc')
-        ->orderBy('pukul', 'desc')
         ->paginate(10)
         ->appends($request->all());
 
@@ -42,12 +41,11 @@ class Kebersihan_ruangController extends Controller
 
         $request->validate([
             'date'    => 'required|date',
-            'pukul'   => 'required',
             'shift'   => 'required',
             'catatan' => 'nullable|string',
         ]);
 
-        $data = $request->only(['date', 'pukul', 'shift', 'catatan']);
+        $data = $request->only(['date', 'shift', 'catatan']);
         $data['username']      = $username;
         $data['nama_produksi'] = $nama_produksi;
         $data['status_produksi'] = "1";
@@ -85,12 +83,11 @@ class Kebersihan_ruangController extends Controller
 
         $request->validate([
             'date'    => 'required|date',
-            'pukul'   => 'required',
             'shift'   => 'required',
             'catatan' => 'nullable|string',
         ]);
 
-        $data = $request->only(['date', 'pukul', 'shift', 'catatan']);
+        $data = $request->only(['date', 'shift', 'catatan']);
         $data['username_updated'] = $username_updated;
         $data['nama_produksi']    = $nama_produksi;
 

@@ -24,7 +24,24 @@ use App\Http\Controllers\{
     NoodleController,
     CookingController,
     KontaminasiController,
-    XrayController
+    XrayController,
+    MetalController, 
+    TahapanController,
+    GramasiController,
+    IqfController,
+    PengemasanController,
+    MesinController,
+    DisposisiController,
+    RepackController,
+    RejectController,
+    PemusnahanController,
+    Verifikasi_sanitasiController,
+    ReturController,
+    RetainController,
+    Sample_bulananController,
+    Cold_storageController,
+    Sample_retainController,
+    SubmissionController
 };
 
 // Dashboard
@@ -148,4 +165,89 @@ Route::resource('kontaminasi', KontaminasiController::class)->parameters([
 // XRay
 Route::resource('xray', XrayController::class)->parameters([
     'xray' => 'uuid'
+]);
+
+// Metal
+Route::resource('metal', MetalController::class)->parameters([
+    'metal' => 'uuid'
+]);
+
+// Tahapan
+Route::resource('tahapan', TahapanController::class)->parameters([
+    'tahapan' => 'uuid'
+]);
+
+// Gramasi
+Route::resource('gramasi', GramasiController::class)->parameters([
+    'gramasi' => 'uuid'
+]);
+
+// IQF
+Route::resource('iqf', IqfController::class)->parameters([
+    'iqf' => 'uuid'
+]);
+
+// Pengemasan
+Route::resource('pengemasan', PengemasanController::class)->parameters([
+    'pengemasan' => 'uuid'
+]);
+
+// verif mesin
+Route::resource('mesin', MesinController::class)->parameters([
+    'mesin' => 'uuid'
+]);
+
+// verif disposisi
+Route::resource('disposisi', DisposisiController::class)->parameters([
+    'disposisi' => 'uuid'
+]);
+
+// repack
+Route::resource('repack', RepackController::class)->parameters([
+    'repack' => 'uuid'
+]);
+
+// reject
+Route::resource('reject', RejectController::class)->parameters([
+    'reject' => 'uuid'
+]);
+
+// pemusnahan
+Route::resource('pemusnahan', PemusnahanController::class)->parameters([
+    'pemusnahan' => 'uuid'
+]);
+
+// verifikasi sanitasi
+Route::resource('verifikasi_sanitasi', Verifikasi_sanitasiController::class)->parameters([
+    'verifikasi_sanitasi' => 'uuid'
+]);
+
+// retur
+Route::resource('retur', ReturController::class)->parameters([
+    'retur' => 'uuid'
+]);
+
+// retain
+Route::resource('retain', RetainController::class)->parameters([
+    'retain' => 'uuid'
+]);
+
+// sample bulanan
+Route::resource('sample_bulanan', Sample_bulananController::class)->parameters([
+    'sample_bulanan' => 'uuid'
+]);
+
+// cold storage
+Route::resource('cold_storage', Cold_storageController::class)->parameters([
+    'cold_storage' => 'uuid'
+]);
+
+// sample retain
+Route::resource('sample_retain', Sample_retainController::class)->parameters([
+    'sample_retain' => 'uuid'
+]);
+
+// submission
+Route::resource('submission', SubmissionController::class)->parameters([
+    'submission' => 'uuid'
 ]);

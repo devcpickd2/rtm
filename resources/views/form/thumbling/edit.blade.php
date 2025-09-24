@@ -5,7 +5,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <h4 class="mb-4"><i class="bi bi-pencil-square"></i> Edit Pemeriksaan Proses Thumbling</h4>
-            <form method="POST" action="{{ route('thumbling.update', $thumbling->uuid) }}" enctype="multipart/form-thumbling">
+            <form method="POST" action="{{ route('thumbling.update', $thumbling->uuid) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -108,71 +108,87 @@
                                     @endforeach
                                 </tr>
 
-                                {{-- Kode Daging, Berat, Suhu --}}
+                                @php
+                                $kode_daging_data = $batch['kode_daging'] ?? [];
+                                @endphp
                                 <tr>
                                     <td class="text-left">Tanggal Produksi / Kode</td>
-                                    @foreach($thumbling->thumbls as $index => $batch)
-                                    @foreach($batch['kode_daging'] ?? [] as $i => $kd)
+                                    @foreach($thumbling->thumbls as $batchIndex => $batch)
+                                    @php $kode_daging_data = $batch['kode_daging'] ?? []; @endphp
+                                    @for($i=0; $i<3; $i++)
                                     <td>
-                                        <input type="text" name="thumbls[{{ $index }}][kode_daging][{{ $i }}][kode]" class="form-control form-control-sm"
-                                        value="{{ old("thumbls.{$index}.kode_daging.{$i}.kode", $kd['kode'] ?? '') }}">
+                                        @for($s=0; $s<2; $s++)
+                                        @php $index = $i*2 + $s; $kd = $kode_daging_data[$index] ?? []; @endphp
+                                        <input type="text" name="thumbls[{{ $batchIndex }}][kode_daging][{{ $index }}][kode]"
+                                        class="form-control form-control-sm"
+                                        value="{{ old("thumbls.$batchIndex.kode_daging.$index.kode", $kd['kode'] ?? '') }}">
+                                        @endfor
                                     </td>
-                                    @endforeach
+                                    @endfor
                                     @endforeach
                                 </tr>
 
                                 <tr>
                                     <td class="text-left">Berat (kg)</td>
-                                    @foreach($thumbling->thumbls as $index => $batch)
-                                    @foreach($batch['kode_daging'] ?? [] as $i => $kd)
+                                    @foreach($thumbling->thumbls as $batchIndex => $batch)
+                                    @php $kode_daging_data = $batch['kode_daging'] ?? []; @endphp
+                                    @for($i=0; $i<3; $i++)
                                     <td>
-                                        <input type="number" step="0.01" name="thumbls[{{ $index }}][kode_daging][{{ $i }}][berat]" class="form-control form-control-sm"
-                                        value="{{ old("thumbls.{$index}.kode_daging.{$i}.berat", $kd['berat'] ?? '') }}">
+                                        @for($s=0; $s<2; $s++)
+                                        @php $index = $i*2 + $s; $kd = $kode_daging_data[$index] ?? []; @endphp
+                                        <input type="number" step="0.01" name="thumbls[{{ $batchIndex }}][kode_daging][{{ $index }}][berat]"
+                                        class="form-control form-control-sm"
+                                        value="{{ old("thumbls.$batchIndex.kode_daging.$index.berat", $kd['berat'] ?? '') }}">
+                                        @endfor
                                     </td>
-                                    @endforeach
+                                    @endfor
                                     @endforeach
                                 </tr>
+
 
                                 <tr class="row-kode-suhu">
                                     <td class="text-left">Suhu Daging (0 - 10°C)</td>
-                                    @foreach($thumbling->thumbls as $index => $batch)
-                                    @foreach($batch['kode_daging'] ?? [] as $i => $kd)
+                                    @foreach($thumbling->thumbls as $batchIndex => $batch)
+                                    @php $kode_daging_data = $batch['kode_daging'] ?? []; @endphp
+                                    @for($i=0; $i<3; $i++)
                                     <td>
-                                        @foreach($kd['suhu_daging'] ?? [] as $s => $suhu)
-                                        <input type="number" step="0.1" name="thumbls[{{ $index }}][kode_daging][{{ $i }}][suhu_daging][]" class="form-control form-control-sm mb-1 suhu-daging"
-                                        value="{{ old("thumbls.{$index}.kode_daging.{$i}.suhu_daging.{$s}", $suhu ?? '') }}">
-                                        @endforeach
+                                        @for($s=0; $s<4; $s++)
+                                        <input type="number" step="0.1" name="thumbls[{{ $batchIndex }}][kode_daging][{{ $i }}][suhu_daging][]"
+                                        class="form-control form-control-sm mb-1 suhu-daging"
+                                        value="{{ old("thumbls.$batchIndex.kode_daging.$i.suhu_daging.$s", $kode_daging_data[$i]['suhu_daging'][$s] ?? '') }}">
+                                        @endfor
                                     </td>
-                                    @endforeach
+                                    @endfor
                                     @endforeach
                                 </tr>
 
-                                {{-- Rata-rata --}}
                                 <tr class="rata-row">
                                     <td class="text-left">Rata-rata</td>
-                                    @foreach($thumbling->thumbls as $index => $batch)
-                                    @foreach($batch['kode_daging'] ?? [] as $i => $kd)
+                                    @foreach($thumbling->thumbls as $batchIndex => $batch)
+                                    @php $kd = $batch['kode_daging'] ?? []; @endphp
+                                    @for($i=0; $i<3; $i++)
                                     <td>
-                                        <input type="number" step="0.01" name="thumbls[{{ $index }}][kode_daging][{{ $i }}][rata_rata_suhu]" class="form-control form-control-sm rata-rata"
-                                        value="{{ old("thumbls.{$index}.kode_daging.{$i}.rata_rata_suhu", $kd['rata_rata_suhu'] ?? '') }}">
+                                        <input type="number" step="0.01" name="thumbls[{{ $batchIndex }}][kode_daging][{{ $i }}][rata_rata_suhu]"
+                                        class="form-control form-control-sm rata-rata"
+                                        value="{{ old("thumbls.$batchIndex.kode_daging.$i.rata_rata_suhu", $kd[$i]['rata_rata_suhu'] ?? '') }}">
                                     </td>
-                                    @endforeach
+                                    @endfor
                                     @endforeach
                                 </tr>
 
-                                {{-- Kondisi Daging --}}
                                 <tr>
                                     <td class="text-left">Kondisi Daging</td>
-                                    @foreach($thumbling->thumbls as $index => $batch)
-                                    @foreach($batch['kode_daging'] ?? [] as $i => $kd)
+                                    @foreach($thumbling->thumbls as $batchIndex => $batch)
+                                    @php $kd = $batch['kode_daging'] ?? []; @endphp
+                                    @for($i=0; $i<3; $i++)
                                     <td>
-                                        <input type="text" name="thumbls[{{ $index }}][kode_daging][{{ $i }}][kondisi_daging]" class="form-control form-control-sm"
-                                        value="{{ old("thumbls.{$index}.kode_daging.{$i}.kondisi_daging", $kd['kondisi_daging'] ?? '') }}">
+                                        <input type="text" name="thumbls[{{ $batchIndex }}][kode_daging][{{ $i }}][kondisi_daging]"
+                                        class="form-control form-control-sm"
+                                        value="{{ old("thumbls.$batchIndex.kode_daging.$i.kondisi_daging", $kd[$i]['kondisi_daging'] ?? '') }}">
                                     </td>
-                                    @endforeach
+                                    @endfor
                                     @endforeach
                                 </tr>
-
                                 {{-- Marinade / Bahan Utama --}}
                                 <tr>
                                     <td class="text-left"><strong>MARINADE</strong></td>
@@ -255,16 +271,6 @@
                                     @endforeach
                                 </tr>
                                 @endfor
-
-                                <!-- {{-- Parameter Cairan --}}
-                                @foreach(['air','suhu_air','suhu_marinade','lama_pengadukan','brix','drum_on','drum_off','drum_speed','vacuum_time','total_time'] as $param)
-                                <tr>
-                                    <td class="text-left">{{ ucwords(str_replace('_',' ', $param)) }}</td>
-                                    @foreach($thumbling->thumbls as $index => $batch)
-                                    <td colspan="3"><input type="{{ in_array($param,['air','suhu_air','suhu_marinade','lama_pengadukan','drum_on','drum_off','drum_speed']) ? 'number':'text'}}" step="0.01" name="thumbls[{{ $index }}][{{ $param }}]" class="form-control form-control-sm" value="{{ $batch[$param] ?? '' }}"></td>
-                                    @endforeach
-                                </tr>
-                                @endforeach -->
 
                                 @foreach(['air','suhu_air','suhu_marinade', 'lama_pengadukan','brix'] as $param)
                                 <tr>
@@ -359,7 +365,6 @@
                                     </td>
                                     @endforeach
                                 </tr>
-
 
                             </tbody>
                         </table>

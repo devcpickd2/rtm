@@ -49,14 +49,14 @@
                                 <small class="text-danger d-none">⚠ Suhu harus 0 - 4 °C</small>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Cold Storage 1 (°C) <small class="text-muted">(-22 – -18)</small></label>
+                                <label class="form-label">Cold Storage 1 (°C) <small class="text-muted">(-20 ± 2)</small></label>
                                 <input type="number" step="0.1" name="cs_1" class="form-control suhu-check" data-min="-22" data-max="-18" value="{{ old('cs_1', $suhu->cs_1) }}">
                                 <small class="text-danger d-none">⚠ Suhu harus -20 ± 2 °C</small>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Cold Storage 2 (°C) <small class="text-muted">(-22 – -18)</small></label>
+                                <label class="form-label">Cold Storage 2 (°C) <small class="text-muted">(-20 ± 2)</small></label>
                                 <input type="number" step="0.1" name="cs_2" class="form-control suhu-check" data-min="-22" data-max="-18" value="{{ old('cs_2', $suhu->cs_2) }}">
                                 <small class="text-danger d-none">⚠ Suhu harus -20 ± 2 °C</small>
                             </div>
@@ -180,7 +180,7 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Cold Stor. FG (°C) <small class="text-muted">(-20 – -18)</small></label>
+                                <label class="form-label">Cold Stor. FG (°C) <small class="text-muted">(-19 ± 1)</small></label>
                                 <input type="number" step="0.1" name="cs_fg" class="form-control suhu-check" data-min="-20" data-max="-18" value="{{ old('cs_fg', $suhu->cs_fg) }}">
                                 <small class="text-danger d-none">⚠ Suhu harus -19 ± 1 °C</small>
                             </div>

@@ -18,7 +18,7 @@ class Kebersihan_ruang extends Model
     protected $keyType   = 'string';
 
     protected $fillable = [
-        'date', 'pukul', 'shift',
+        'date', 'shift',
         'cr_rm', 'cs_1', 'cs_2', 'seasoning', 'prep_room', 'cooking', 'filling', 
         'rice_boiling', 'noodle', 'topping', 'packing', 'iqf', 'cs_fg', 'ds',
         'catatan', 'username', 'nama_produksi', 'status_produksi', 'nama_spv', 'status_spv', 'catatan_spv', 

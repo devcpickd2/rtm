@@ -83,19 +83,31 @@
                                     <td colspan="3"><input type="text" name="thumbls[1][asal]" class="form-control form-control-sm"></td>
                                 </tr>
 
-                                {{-- Kode Daging --}}
+                                {{-- Daging --}}
                                 <tr>
                                     <td class="text-left">Tanggal Produksi / Kode</td>
                                     @for($i=0; $i<3; $i++)
-                                    <td><input type="text" name="thumbls[1][kode_daging][{{ $i }}][kode]" class="form-control form-control-sm"></td>
+                                    <td> 
+                                        @for($s=0; $s<2; $s++)
+                                        @php $index = $i*2 + $s; @endphp
+                                        <input type="text" name="thumbls[1][kode_daging][{{ $index }}][kode]" class="form-control form-control-sm">
+                                        @endfor
+                                    </td>
                                     @endfor
                                 </tr>
+
                                 <tr>
                                     <td class="text-left">Berat (kg)</td>
                                     @for($i=0; $i<3; $i++)
-                                    <td><input type="number" step="0.01" name="thumbls[1][kode_daging][{{ $i }}][berat]" class="form-control form-control-sm"></td>
+                                    <td> 
+                                        @for($s=0; $s<2; $s++)
+                                        @php $index = $i*2 + $s; @endphp
+                                        <input type="number" step="0.01" name="thumbls[1][kode_daging][{{ $index }}][berat]" class="form-control form-control-sm">
+                                        @endfor
+                                    </td>
                                     @endfor
                                 </tr>
+
                                 <tr class="row-kode-suhu">
                                     <td class="text-left">Suhu Daging (0 - 10°C)</td>
                                     @for($i=0; $i<3; $i++)
@@ -122,7 +134,7 @@
                                 <tr>
                                     <td class="text-left">Kondisi Daging</td>
                                     @for($i=0; $i<3; $i++)
-                                    <td><input type="text" name="thumbls[1][kode_daging][{{ $i }}][kondisi_daging]" class="form-control form-control-sm"></td>
+                                    <td><input type="text" name="thumbls[1][kode_daging][{{ $i }}][kondisi_daging]" class="form-control form-control-sm" value="Aroma segar, tidak busuk, bebas kontaminasi"></td>
                                     @endfor
                                 </tr>
 
@@ -226,7 +238,7 @@
                                 </tr>
 
                                 {{-- Kondisi & Catatan --}}
-                                <tr><td class="text-left"><strong>Kondisi</strong></td><td colspan="3"><input type="text" name="thumbls[1][kondisi]" class="form-control form-control-sm"></td></tr>
+                                <tr><td class="text-left"><strong>Kondisi</strong></td><td colspan="3"><input type="text" name="thumbls[1][kondisi]" class="form-control form-control-sm" value="Sensori sesuai, daging + premix tercampur rata tidak menggumpal"></td></tr>
                                 <tr><td class="text-left"><strong>Catatan</strong></td><td colspan="3"><textarea name="thumbls[1][catatan]" class="form-control form-control-sm"></textarea></td></tr>
 
                                 {{-- Section Aksi --}}

@@ -62,152 +62,134 @@
                         $no = ($data->currentPage() - 1) * $data->perPage() + 1; 
                         @endphp
                         @forelse ($data as $dep)
+                        @php
+                        // ambil field decoding yg sudah disiapkan di controller
+                        $noodle = $dep->noodle_decoded ?? [];
+                        @endphp
                         <tr>
                             <td class="text-center">{{ $no++ }}</td>
                             <td>{{ \Carbon\Carbon::parse($dep->date)->format('d-m-Y') }} | Shift: {{ $dep->shift }}</td>   
                             <td>{{ $dep->nama_produk }}</td>
                             <td class="text-center">
                                 @php
-                                $noodle = json_decode($dep->noodle, true);
+                                // Ambil data mixing yang sudah didecode di controller
+                                $mixing = $dep->mixing_decoded ?? [];
                                 @endphp
 
-                                @if(!empty($noodle))
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#noodleModal{{ $dep->uuid }}" style="font-weight: bold; text-decoration: underline;">
-                                    Hasil noodle
-                                </a>
-                                <div class="modal fade" id="noodleModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="noodleModalLabel{{ $dep->uuid }}" aria-hidden="true">
-                                    <div class="modal-dialog" style="max-width: 500px;">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-info text-white">
-                                                <h5 class="modal-title text-start" id="noodleModalLabel{{ $dep->uuid }}">Detail noodle</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <ul class="list-group text-left">
-                                                    @foreach($noodle as $index => $item)
-                                                    <li class="list-group-item mb-2" style="border: 1px solid ; border-radius: 5px; padding: 10px;">
-                                                        <div style="border-bottom: 1px solid ; font-weight: bold; padding-bottom: 5px; margin-bottom: 5px;">
-                                                            Pemeriksaan {{ $index + 1 }}
-                                                        </div>
-                                                        <div><strong>Kode Produksi:</strong> {{ $item['nama_produk'] ?? '-' }}</div>
-                                                        <div><strong>T. Raw Material:</strong> {{ $item['kode_produksi'] ?? '-' }}°C</div>
-                                                        <div><strong>Bahan Utama:</strong> {{ $item['bahan_utama'] ?? '-' }}</div>
-                                                        <div><strong>Kode Produksi Bahan:</strong> {{ $item['kode_bahan'] ?? '-' }}</div>
-                                                        <div><strong>T. Ruang:</strong> {{ $item['suhu_ruang_aging'] ?? '-' }}°C</div>
-                                                        <div><strong>T. Produk:</strong> {{ $item['suhu_akhir'] ?? '-' }}°C</div>
-                                                        <div><strong>T. Produk 1 Menit:</strong> {{ $item['suhu_after'] ?? '-' }}°C</div>
-                                                        <div><strong>Jam Mulai:</strong> {{ $item['jam_mulai'] ?? '-' }}</div>
-                                                        <div><strong>Jam Selesai:</strong> {{ $item['jam_selesai'] ?? '-' }}</div>
-                                                    </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
-                                            </div>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#mixingModal{{ $dep->uuid }}"
+                                   style="font-weight: bold; text-decoration: underline;">
+                                   Hasil Mixing
+                               </a>
+
+                               <div class="modal fade" id="mixingModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="mixingModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg"> {{-- modal besar supaya tabel muat --}}
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-info text-white">
+                                            <h5 class="modal-title" id="mixingModalLabel{{ $dep->uuid }}">Detail Mixing</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
+                                        <div class="modal-body">
+                                            @if(count($mixing))
+                                            <div class="table-responsive">
+                                               <table class="table table-bordered table-sm text-left align-middle">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>Nama Produk</th>
+                                                        @foreach($mixing as $item)
+                                                        <td>{{ $item['nama_produk'] ?? '-' }}</td>
+                                                        @endforeach
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Kode Produksi</th>
+                                                        @foreach($mixing as $item)
+                                                        <td>{{ $item['kode_produksi'] ?? '-' }}</td>
+                                                        @endforeach
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Bahan Utama</th>
+                                                        @foreach($mixing as $item)
+                                                        <td>{{ $item['bahan_utama'] ?? '-' }}</td>
+                                                        @endforeach
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Kode Bahan</th>
+                                                        @foreach($mixing as $item)
+                                                        <td>{{ $item['kode_bahan'] ?? '-' }}</td>
+                                                        @endforeach
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Berat Bahan</th>
+                                                        @foreach($mixing as $item)
+                                                        <td>{{ $item['berat_bahan'] ?? '-' }}</td>
+                                                        @endforeach
+                                                    </tr>
+                                                    {{-- Tambahkan field lain jika ada --}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        @else
+                                        <p class="text-center text-muted">Belum ada data mixing.</p>
+                                        @endif
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
                                     </div>
                                 </div>
-                                @else
-                                <span>-</span>
-                                @endif
-                            </td>
+                            </div>
+                        </div>
+                    </td>
 
-                            <td class="text-center align-middle">
-                                @if ($dep->status_produksi == 0)
-                                <span class="fw-bold text-secondary">Created</span>
-                                @elseif ($dep->status_produksi == 1)
-                                <!-- Link buka modal -->
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#checkedModal{{ $dep->uuid }}" 
-                                    class="fw-bold text-success text-decoration-none" style="cursor: pointer; font-weight: bold;">Checked</a>
+                    {{-- Kolom Produksi --}}
+                    <td class="text-center align-middle">
+                        @if ($dep->status_produksi == 0)
+                        <span class="fw-bold text-secondary">Created</span>
+                        @elseif ($dep->status_produksi == 1)
+                        <span class="fw-bold text-success">Checked</span>
+                        @elseif ($dep->status_produksi == 2)
+                        <span class="fw-bold text-danger">Recheck</span>
+                        @endif
+                    </td>
 
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="checkedModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="checkedModalLabel{{ $dep->uuid }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-success text-white">
-                                                    <h5 class="modal-title" id="checkedModalLabel{{ $dep->uuid }}">Detail Checked</h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <ul class="list-unstyled mb-0">
-                                                        <li><strong>Status:</strong> Checked</li>
-                                                        <li><strong>Nama Produksi:</strong> {{ $dep->nama_produksi ?? '-' }}</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @elseif ($dep->status_produksi == 2)
-                                    <span class="fw-bold text-danger">Recheck</span>
-                                    @endif
-                                </td>
+                    {{-- Kolom SPV --}}
+                    <td class="text-center align-middle">
+                        @if ($dep->status_spv == 0)
+                        <span class="fw-bold text-secondary">Created</span>
+                        @elseif ($dep->status_spv == 1)
+                        <span class="fw-bold text-success">Verified</span>
+                        @elseif ($dep->status_spv == 2)
+                        <span class="fw-bold text-danger">Revision</span>
+                        @endif
+                    </td>
 
-                                <td class="text-center align-middle">
-                                    @if ($dep->status_spv == 0)
-                                    <span class="fw-bold text-secondary">Created</span>
-                                    @elseif ($dep->status_spv == 1)
-                                    <span class="fw-bold text-success">Verified</span>
-                                    @elseif ($dep->status_spv == 2)
-                                    <!-- Link buka modal -->
-                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#revisionModal{{ $dep->uuid }}" 
-                                     class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
+                    <td class="text-center">
+                        <a href="{{ route('noodle.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <form action="{{ route('noodle.destroy', $dep->uuid) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Yakin ingin menghapus?')">
+                            <i class="bi bi-trash"></i> Hapus
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="7" class="text-center">Belum ada data noodle.</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
-                                     <!-- Modal -->
-                                     <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title" id="revisionModalLabel{{ $dep->uuid }}">Detail Revisi</h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <ul class="list-unstyled mb-0">
-                                                        <li><strong>Status:</strong> Revision</li>
-                                                        <li><strong>Catatan:</strong> {{ $dep->catatan_spv ?? '-' }}</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endif
-                                </td>
-
-                                <td class="text-center">
-                                    <a href="{{ route('noodle.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </a>
-                                    <form action="{{ route('noodle.destroy', $dep->uuid) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Yakin ingin menghapus?')">
-                                        <i class="bi bi-trash"></i> Hapus
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="19" class="text-center">Belum ada data noodle.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            {{-- Pagination --}}
-            <div class="mt-3">
-                {{ $data->withQueryString()->links('pagination::bootstrap-5') }}
-            </div>
-        </div>
-    </div>
+{{-- Pagination --}}
+<div class="mt-3">
+    {{ $data->withQueryString()->links('pagination::bootstrap-5') }}
+</div>
+</div>
+</div>
 </div>
 
 {{-- Auto-hide alert setelah 3 detik --}}

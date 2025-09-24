@@ -48,14 +48,14 @@
                                 <small class="text-danger d-none">⚠ Suhu harus 0 - 4 °C</small>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Cold Storage 1 (°C) <small class="text-muted">(-22 – -18)</small></label>
+                                <label class="form-label">Cold Storage 1 (°C) <small class="text-muted">(-20 ± 2)</small></label>
                                 <input type="number" step="0.1" name="cs_1" class="form-control suhu-check" data-min="-22" data-max="-18">
                                 <small class="text-danger d-none">⚠ Suhu harus -20 ± 2 °C</small>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Cold Storage 2 (°C) <small class="text-muted">(-22 – -18)</small></label>
+                                <label class="form-label">Cold Storage 2 (°C) <small class="text-muted">(-20 ± 2)</small></label>
                                 <input type="number" step="0.1" name="cs_2" class="form-control suhu-check" data-min="-22" data-max="-18">
                                 <small class="text-danger d-none">⚠ Suhu harus -20 ± 2 °C</small>
                             </div>
@@ -179,7 +179,7 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Cold Stor. FG (°C) <small class="text-muted">(-20 – -18)</small></label>
+                                <label class="form-label">Cold Stor. FG (°C) <small class="text-muted">(-19 ± 1)</small></label>
                                 <input type="number" step="0.1" name="cs_fg" class="form-control suhu-check" data-min="-20" data-max="-18">
                                 <small class="text-danger d-none">⚠ Suhu harus -19 ± 1 °C</small>
                             </div>
@@ -224,50 +224,50 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const dateInput = document.getElementById("dateInput");
-    const timeInput = document.getElementById("timeInput");
-    const shiftInput = document.getElementById("shiftInput");
+    document.addEventListener("DOMContentLoaded", function () {
+        const dateInput = document.getElementById("dateInput");
+        const timeInput = document.getElementById("timeInput");
+        const shiftInput = document.getElementById("shiftInput");
 
     // Ambil waktu sekarang
-    let now = new Date();
-    let yyyy = now.getFullYear();
-    let mm = String(now.getMonth() + 1).padStart(2, '0');
-    let dd = String(now.getDate()).padStart(2, '0');
-    let hh = String(now.getHours()).padStart(2, '0');
-    let min = String(now.getMinutes()).padStart(2, '0');
+        let now = new Date();
+        let yyyy = now.getFullYear();
+        let mm = String(now.getMonth() + 1).padStart(2, '0');
+        let dd = String(now.getDate()).padStart(2, '0');
+        let hh = String(now.getHours()).padStart(2, '0');
+        let min = String(now.getMinutes()).padStart(2, '0');
 
     // Set value tanggal dan jam
-    dateInput.value = `${yyyy}-${mm}-${dd}`;
-    timeInput.value = `${hh}:${min}`;
+        dateInput.value = `${yyyy}-${mm}-${dd}`;
+        timeInput.value = `${hh}:${min}`;
 
     // Tentukan shift berdasarkan jam
-    let hour = parseInt(hh);
-    if (hour >= 7 && hour < 15) {
-        shiftInput.value = "1";
-    } else if (hour >= 15 && hour < 23) {
-        shiftInput.value = "2";
-    } else {
-        shiftInput.value = "3"; 
-    }
+        let hour = parseInt(hh);
+        if (hour >= 7 && hour < 15) {
+            shiftInput.value = "1";
+        } else if (hour >= 15 && hour < 23) {
+            shiftInput.value = "2";
+        } else {
+            shiftInput.value = "3"; 
+        }
 
     // Validasi suhu otomatis
-    document.querySelectorAll(".suhu-check").forEach(function(input) {
-        input.addEventListener("input", function () {
-            let min = parseFloat(this.dataset.min);
-            let max = parseFloat(this.dataset.max);
-            let value = parseFloat(this.value);
-            let warning = this.nextElementSibling;
+        document.querySelectorAll(".suhu-check").forEach(function(input) {
+            input.addEventListener("input", function () {
+                let min = parseFloat(this.dataset.min);
+                let max = parseFloat(this.dataset.max);
+                let value = parseFloat(this.value);
+                let warning = this.nextElementSibling;
 
-            if (!isNaN(value) && (value < min || value > max)) {
-                this.classList.add("is-invalid");
-                warning.classList.remove("d-none");
-            } else {
-                this.classList.remove("is-invalid");
-                warning.classList.add("d-none");
-            }
+                if (!isNaN(value) && (value < min || value > max)) {
+                    this.classList.add("is-invalid");
+                    warning.classList.remove("d-none");
+                } else {
+                    this.classList.remove("is-invalid");
+                    warning.classList.add("d-none");
+                }
+            });
         });
     });
-});
 </script>
 @endsection

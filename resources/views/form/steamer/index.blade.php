@@ -76,33 +76,81 @@
                                     Hasil Steaming
                                 </a>
                                 <div class="modal fade" id="steamingModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="steamingModalLabel{{ $dep->uuid }}" aria-hidden="true">
-                                    <div class="modal-dialog" style="max-width: 500px;">
+                                    <div class="modal-dialog" style="max-width: 80%;">
                                         <div class="modal-content">
                                             <div class="modal-header bg-info text-white">
                                                 <h5 class="modal-title text-start" id="steamingModalLabel{{ $dep->uuid }}">Detail Steaming</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <ul class="list-group text-left">
-                                                    @foreach($steaming as $index => $item)
-                                                    <li class="list-group-item mb-2" style="border: 1px solid ; border-radius: 5px; padding: 10px;">
-                                                        <div style="border-bottom: 1px solid ; font-weight: bold; padding-bottom: 5px; margin-bottom: 5px;">
-                                                            Pemeriksaan {{ $index + 1 }}
-                                                        </div>
-                                                        <div><strong>Kode Produksi:</strong> {{ $item['kode_produksi'] ?? '-' }}</div>
-                                                        <div><strong>T. Raw Material:</strong> {{ $item['suhu_rm'] ?? '-' }}°C</div>
-                                                        <div><strong>Jumlah Tray:</strong> {{ $item['jumlah_tray'] ?? '-' }}</div>
-                                                        <div><strong>T. Ruang:</strong> {{ $item['suhu_ruang'] ?? '-' }}°C</div>
-                                                        <div><strong>T. Produk:</strong> {{ $item['suhu_produk'] ?? '-' }}°C</div>
-                                                        <div><strong>T. Produk 1 Menit:</strong> {{ $item['suhu_after'] ?? '-' }}°C</div>
-                                                        <div><strong>Waktu:</strong> {{ $item['waktu'] ?? '-' }} Menit</div>
-                                                        <div><strong>Keterangan:</strong> {{ $item['keterangan'] ?? '-' }}</div>
-                                                        <div><strong>Jam Mulai:</strong> {{ $item['jam_mulai'] ?? '-' }}</div>
-                                                        <div><strong>Jam Selesai:</strong> {{ $item['jam_selesai'] ?? '-' }}</div>
-                                                    </li>
-                                                    @endforeach
-                                                </ul>
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-sm text-left align-middle">
+                                                        <tbody>
+                                                            <tr>
+                                                                <th>Kode Produksi</th>
+                                                                @foreach($steaming as $item)
+                                                                <td>{{ $item['kode_produksi'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>T. Raw Material (°C)</th>
+                                                                @foreach($steaming as $item)
+                                                                <td>{{ $item['suhu_rm'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Jumlah Tray</th>
+                                                                @foreach($steaming as $item)
+                                                                <td>{{ $item['jumlah_tray'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>T. Ruang (°C)</th>
+                                                                @foreach($steaming as $item)
+                                                                <td>{{ $item['suhu_ruang'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>T. Produk (°C)</th>
+                                                                @foreach($steaming as $item)
+                                                                <td>{{ $item['suhu_produk'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>T. Produk 1 Menit (°C)</th>
+                                                                @foreach($steaming as $item)
+                                                                <td>{{ $item['suhu_after'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Waktu (Menit)</th>
+                                                                @foreach($steaming as $item)
+                                                                <td>{{ $item['waktu'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Keterangan</th>
+                                                                @foreach($steaming as $item)
+                                                                <td>{{ $item['keterangan'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Jam Mulai</th>
+                                                                @foreach($steaming as $item)
+                                                                <td>{{ $item['jam_mulai'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Jam Selesai</th>
+                                                                @foreach($steaming as $item)
+                                                                <td>{{ $item['jam_selesai'] ?? '-' }}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
+
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
                                             </div>

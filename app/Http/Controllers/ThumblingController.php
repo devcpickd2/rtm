@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class ThumblingController extends Controller
 {
+
     public function index(Request $request)
     {
         $search     = $request->input('search');
@@ -17,8 +18,8 @@ class ThumblingController extends Controller
         $data = Thumbling::query()
         ->when($search, function ($query) use ($search) {
             $query->where('username', 'like', "%{$search}%")
-            ->orWhere('nama_produk', 'like', "%{$search}%")
-            ->orWhere('thumbls', 'like', "%{$search}%");
+            ->orWhere('nama_produk', 'like', "%{$search}%");
+                  // Tidak perlu cari di 'thumbls' JSON, biar aman
         })
         ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
             $query->whereBetween('date', [$start_date, $end_date]);
@@ -28,8 +29,21 @@ class ThumblingController extends Controller
         ->paginate(10)
         ->appends($request->all());
 
+    // Decode JSON di controller supaya Blade aman
+        $data->getCollection()->transform(function ($item) {
+            if (is_string($item->thumbls)) {
+                $item->thumbls_decoded = json_decode($item->thumbls, true);
+            } elseif (is_array($item->thumbls)) {
+            $item->thumbls_decoded = $item->thumbls; // sudah array
+        } else {
+            $item->thumbls_decoded = [];
+        }
+        return $item;
+    });
+
         return view('form.thumbling.index', compact('data', 'search', 'start_date', 'end_date'));
     }
+
 
     public function create()
     {

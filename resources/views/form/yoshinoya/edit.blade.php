@@ -45,7 +45,7 @@
                                 <label class="form-label">Jenis Saus</label>
                                 <select id="saus" name="saus" class="form-control" required>
                                     <option value="" disabled>Pilih Saus</option>
-                                    <option value="Yoshinoya" {{ old('saus', $yoshinoya->saus) == 'Yoshinoya' ? 'selected' : '' }}>Yoshinoya</option>
+                                    <option value="Teriyaki" {{ old('saus', $yoshinoya->saus) == 'Teriyaki' ? 'selected' : '' }}>Teriyaki</option>
                                     <option value="Vegetable" {{ old('saus', $yoshinoya->saus) == 'Vegetable' ? 'selected' : '' }}>Vegetable</option>
                                 </select>
                             </div>
