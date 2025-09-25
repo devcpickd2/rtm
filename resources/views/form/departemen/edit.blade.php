@@ -20,7 +20,7 @@
             {{-- Form Edit --}}
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <form action="{{ route('departemen.update', $departemen->id) }}" method="POST">
+                    <form action="{{ route('departemen.update', $departemen->uuid) }}" method="POST">
                         @csrf
                         @method('PUT')
 

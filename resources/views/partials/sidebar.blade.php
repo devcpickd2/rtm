@@ -1,8 +1,12 @@
+@php
+$type_user = auth()->user()->type_user;
+@endphp
+
 <!-- Sidebar -->
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark" id="accordionSidebar">
+<ul class="navbar-nav sidebar sidebar-dark" id="accordionSidebar">
 
     <!-- Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/') }}">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
         <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
         <div class="sidebar-brand-text mx-3">E-Ready Meal</div>
     </a>
@@ -20,9 +24,10 @@
     <hr class="sidebar-divider">
 
     <!-- Master Data -->
+    @if($type_user == 0)
     <div class="sidebar-heading">Master Data</div>
     @php
-    $masterActive = request()->routeIs('departemen.*') || request()->routeIs('plant.*') || request()->routeIs('produk.*') || request()->routeIs('produksi.*');
+    $masterActive = request()->routeIs('departemen.*') || request()->routeIs('plant.*') || request()->routeIs('produk.*') || request()->routeIs('produksi.*') || request()->routeIs('user.*');
     @endphp
     <li class="nav-item">
         <a class="nav-link {{ $masterActive ? '' : 'collapsed' }}" href="#"
@@ -31,7 +36,8 @@
         <span>Master Data</span>
     </a>
     <div id="collapseMasterData" class="collapse {{ $masterActive ? 'show' : '' }}" data-bs-parent="#accordionSidebar">
-        <div class="bg-dark py-2 collapse-inner rounded">
+        <div class="collapse-inner rounded">
+            <a class="collapse-item {{ request()->routeIs('user.*') ? 'active' : '' }}" href="{{ route('user.index') }}">User</a>
             <a class="collapse-item {{ request()->routeIs('departemen.*') ? 'active' : '' }}" href="{{ route('departemen.index') }}">Departemen</a>
             <a class="collapse-item {{ request()->routeIs('plant.*') ? 'active' : '' }}" href="{{ route('plant.index') }}">Plant</a>
             <a class="collapse-item {{ request()->routeIs('produk.*') ? 'active' : '' }}" href="{{ route('produk.index') }}">List Produk</a>
@@ -39,8 +45,10 @@
         </div>
     </div>
 </li>
+@endif
 
 <!-- Form QC -->
+@if(in_array($type_user, [0,1,4,8]))
 <div class="sidebar-heading">Form QC</div>
 @php
 $formActive = request()->routeIs('suhu.*') || request()->routeIs('sanitasi.*') || request()->routeIs('kebersihan_ruang.*') || request()->routeIs('gmp.*') || request()->routeIs('verifikasi_sanitasi.*');
@@ -140,6 +148,7 @@ $formActiveWarehouse = request()->routeIs('noodle.*') || request()->routeIs('ric
   </div>
 </div>
 </li>
+@endif
 
 <hr class="sidebar-divider d-none d-md-block">
 
@@ -148,16 +157,18 @@ $formActiveWarehouse = request()->routeIs('noodle.*') || request()->routeIs('ric
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
 </div>
 
+
 </ul>
 
-<!-- Sidebar CSS -->
+<!-- Sidebar CSS Merah -->
 <style>
     #accordionSidebar {
         width: 220px;
         transition: width 0.3s;
         min-height: 100vh;
         overflow-x: hidden;
-        background: #4e73df;
+        /* Gradasi merah */
+        background: linear-gradient(180deg, #b41e1e, #8b0000);
     }
 
     #accordionSidebar.minimized {
@@ -167,10 +178,12 @@ $formActiveWarehouse = request()->routeIs('noodle.*') || request()->routeIs('ric
     #accordionSidebar .nav-link i {
         min-width: 25px;
         text-align: center;
+        color: #fff;
     }
 
     #accordionSidebar .nav-link span {
         transition: all 0.3s;
+        color: #fff;
     }
 
     #accordionSidebar .collapse-inner a {
@@ -196,7 +209,7 @@ $formActiveWarehouse = request()->routeIs('noodle.*') || request()->routeIs('ric
     position: absolute;
     left: 150px;
     top: 0;
-    background: #4e73df;
+    background: #8b0000;
     min-width: 200px;
     z-index: 9999;
     display: none;
@@ -215,7 +228,6 @@ $formActiveWarehouse = request()->routeIs('noodle.*') || request()->routeIs('ric
     transition: transform 0.3s;
 }
 </style>
-
 <!-- Sidebar JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Verifikasi_sanitasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class Verifikasi_sanitasiController extends Controller
 {
@@ -14,18 +16,18 @@ class Verifikasi_sanitasiController extends Controller
         $end_date   = $request->input('end_date');
 
         $data = Verifikasi_sanitasi::query()
-        ->when($search, function ($query) use ($search) {
-            $query->where('username', 'like', "%{$search}%")
-            ->orWhere('area', 'like', "%{$search}%")
-            ->orWhere('mesin', 'like', "%{$search}%");
-        })
-        ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
-            $query->whereBetween('date', [$start_date, $end_date]);
-        })
-        ->orderBy('date', 'desc')
-        ->orderBy('pukul', 'desc')
-        ->paginate(10) 
-        ->appends($request->all());
+            ->when($search, function ($query) use ($search) {
+                $query->where('username', 'like', "%{$search}%")
+                      ->orWhere('area', 'like', "%{$search}%")
+                      ->orWhere('mesin', 'like', "%{$search}%");
+            })
+            ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
+                $query->whereBetween('date', [$start_date, $end_date]);
+            })
+            ->orderBy('date', 'desc')
+            ->orderBy('pukul', 'desc')
+            ->paginate(10)
+            ->appends($request->all());
 
         return view('form.verifikasi_sanitasi.index', compact('data', 'search', 'start_date', 'end_date'));
     }
@@ -37,80 +39,84 @@ class Verifikasi_sanitasiController extends Controller
 
     public function store(Request $request)
     {
-        $username      = session('username', 'Putri');
-        $nama_produksi = session('nama_produksi', 'Produksi RTM');
-
         $request->validate([
             'date'  => 'required|date',
             'shift' => 'required',
             'pukul' => 'required|date_format:H:i',
-            'area' => 'required|string',
+            'area'  => 'required|string',
             'mesin' => 'required|string',
             'cleaning_agents' => 'nullable|string',
-            'keterangan'   => 'nullable|string',
-            'catatan'   => 'nullable|string',
+            'keterangan'      => 'nullable|string',
+            'catatan'         => 'nullable|string',
         ]);
 
         $data = $request->only([
             'date', 'shift', 'pukul', 'area', 'mesin', 'cleaning_agents', 'keterangan', 'catatan'
         ]);
 
-        $data['username']      = $username;
-        $data['nama_produksi'] = $nama_produksi;
-        $data['status_produksi'] = "1";
-        $data['status_spv'] = "0";
+        // Kalau TIME di DB pakai HH:MM:SS
+        if (strlen($data['pukul']) === 5) {
+            $data['pukul'] .= ':00';
+        }
 
-        Verifikasi_sanitasi::create($data);
+        $data['username']         = Auth::user()->username;
+        $data['username_updated'] = Auth::user()->username;
+        $data['nama_produksi']    = session()->has('selected_produksi')
+                                    ? \App\Models\User::where('uuid', session('selected_produksi'))->first()->name
+                                    : null;
+        $data['status_produksi']  = "1";
+        $data['status_spv']       = "0";
 
-        return redirect()->route('verifikasi_sanitasi.index')->with('success', 'Data Verifikasi Sanitasi berhasil disimpan');
+        $verifikasi = Verifikasi_sanitasi::create($data);
+
+        // Set tgl_update_produksi = created_at + 1 jam
+        $verifikasi->update(['tgl_update_produksi' => Carbon::parse($verifikasi->created_at)->addHour()]);
+
+        return redirect()->route('verifikasi_sanitasi.index')
+            ->with('success', 'Data Verifikasi Sanitasi berhasil disimpan');
     }
 
     public function edit(string $uuid)
     {
-    // pakai huruf besar sesuai nama model
         $verifikasi_sanitasi = Verifikasi_sanitasi::where('uuid', $uuid)->firstOrFail();
         return view('form.verifikasi_sanitasi.edit', compact('verifikasi_sanitasi'));
     }
 
     public function update(Request $request, string $uuid)
     {
-    // Ambil data
         $verifikasi_sanitasi = Verifikasi_sanitasi::findOrFail($uuid);
 
-    // Validasi
         $request->validate([
             'date'  => 'required|date',
             'shift' => 'required',
-            'pukul' => 'required', 
-            'area' => 'required|string',
+            'pukul' => 'required',
+            'area'  => 'required|string',
             'mesin' => 'required|string',
             'cleaning_agents' => 'nullable|string',
-            'keterangan'   => 'nullable|string',
-            'catatan'   => 'nullable|string',
+            'keterangan'      => 'nullable|string',
+            'catatan'         => 'nullable|string',
         ]);
 
-    // Ambil hanya field yang diperlukan
         $data = $request->only([
             'date', 'shift', 'pukul', 'area', 'mesin', 'cleaning_agents', 'keterangan', 'catatan'
         ]);
 
-    // Kalau kolom TIME di DB butuh format HH:MM:SS → tambahkan :00
         if (strlen($data['pukul']) === 5) {
-            $data['pukul'] = $data['pukul'] . ':00';
+            $data['pukul'] .= ':00';
         }
 
-        $data['username_updated'] = session('username_updated', 'Harnis');
-        $data['nama_produksi']    = session('nama_produksi', 'Produksi RTM');
+        $data['username_updated'] = Auth::user()->username;
+        $data['nama_produksi']    = session()->has('selected_produksi')
+                                    ? \App\Models\User::where('uuid', session('selected_produksi'))->first()->name
+                                    : null;
 
-    // Update dengan fill()->save()
-        $verifikasi_sanitasi->fill($data);
-        $verifikasi_sanitasi->save();
+        $verifikasi_sanitasi->update($data);
 
-    // Debug kalau perlu:
-    // dd($verifikasi_sanitasi->getChanges());
+        // Update tgl_update_produksi = updated_at + 1 jam
+        $verifikasi_sanitasi->update(['tgl_update_produksi' => Carbon::parse($verifikasi_sanitasi->updated_at)->addHour()]);
 
         return redirect()->route('verifikasi_sanitasi.index')
-        ->with('success', 'Data Verifikasi Sanitasi berhasil diperbarui');
+            ->with('success', 'Data Verifikasi Sanitasi berhasil diperbarui');
     }
 
     public function destroy($uuid)
@@ -118,6 +124,7 @@ class Verifikasi_sanitasiController extends Controller
         $verifikasi_sanitasi = Verifikasi_sanitasi::where('uuid', $uuid)->firstOrFail();
         $verifikasi_sanitasi->delete();
 
-        return redirect()->route('verifikasi_sanitasi.index')->with('success', 'Data Verifikasi Sanitasi berhasil dihapus');
+        return redirect()->route('verifikasi_sanitasi.index')
+            ->with('success', 'Data Verifikasi Sanitasi berhasil dihapus');
     }
 }

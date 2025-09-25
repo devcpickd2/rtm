@@ -3,48 +3,38 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use App\Traits\HasUuid; // Tambahkan ini
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasUuid; // Tambahkan HasUuid
+    use HasFactory,  HasUuids;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $table = 'users'; // nama tabel
+    protected $primaryKey = 'uuid';
+
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'uuid',
-        'username',
-        'plant',
-        'department',
-        'type_user',
-        'photo',
+        'uuid', 'name', 'username', 'password', 'plant',
+        'department', 'type_user', 'photo', 'email',
+        'activation', 'updater'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', 'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    // Jika pakai timestamp di database
+    public $timestamps = true;
+
+// app/Models/User.php
+    public function plantRelasi()
+    {
+        return $this->belongsTo(Plant::class, 'plant'); 
+    }
+
+    public function departmentRelasi()
+    {
+        return $this->belongsTo(Departemen::class, 'department');
+    }
+
 }

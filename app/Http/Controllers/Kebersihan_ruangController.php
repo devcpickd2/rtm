@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Kebersihan_ruang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class Kebersihan_ruangController extends Controller
 {
@@ -14,17 +16,17 @@ class Kebersihan_ruangController extends Controller
         $end_date   = $request->input('end_date');
 
         $data = Kebersihan_ruang::query()
-        ->when($search, function ($query) use ($search) {
-            $query->where('username', 'like', "%{$search}%")
-            ->orWhere('nama_produksi', 'like', "%{$search}%")
-            ->orWhere('shift', 'like', "%{$search}%");
-        })
-        ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
-            $query->whereBetween('date', [$start_date, $end_date]);
-        })
-        ->orderBy('date', 'desc')
-        ->paginate(10)
-        ->appends($request->all());
+            ->when($search, function ($query) use ($search) {
+                $query->where('username', 'like', "%{$search}%")
+                      ->orWhere('nama_produksi', 'like', "%{$search}%")
+                      ->orWhere('shift', 'like', "%{$search}%");
+            })
+            ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
+                $query->whereBetween('date', [$start_date, $end_date]);
+            })
+            ->orderBy('date', 'desc')
+            ->paginate(10)
+            ->appends($request->all());
 
         return view('form.kebersihan_ruang.index', compact('data', 'search', 'start_date', 'end_date'));
     }
@@ -36,9 +38,6 @@ class Kebersihan_ruangController extends Controller
 
     public function store(Request $request)
     {
-        $username      = session('username', 'Putri');
-        $nama_produksi = session('nama_produksi', 'Produksi RTM');
-
         $request->validate([
             'date'    => 'required|date',
             'shift'   => 'required',
@@ -46,27 +45,31 @@ class Kebersihan_ruangController extends Controller
         ]);
 
         $data = $request->only(['date', 'shift', 'catatan']);
-        $data['username']      = $username;
-        $data['nama_produksi'] = $nama_produksi;
-        $data['status_produksi'] = "1";
-        $data['status_spv'] = "0";
+        $data['username']         = Auth::user()->username;
+        $data['username_updated'] = Auth::user()->username;
+        $data['nama_produksi']    = session()->has('selected_produksi')
+                                    ? \App\Models\User::where('uuid', session('selected_produksi'))->first()->name
+                                    : null;
+        $data['status_produksi']  = "1";
+        $data['status_spv']       = "0";
 
-        // daftar semua area yang punya input tabel
         $areas = [
             'rice_boiling', 'noodle', 'cr_rm', 'cs_1', 'cs_2',
             'seasoning', 'prep_room', 'cooking', 'filling',
             'topping', 'packing', 'iqf', 'cs_fg', 'ds'
         ];
 
-        // simpan tiap area ke kolom masing-masing (langsung array, biar casts yang urus)
         foreach ($areas as $area) {
             $data[$area] = $request->input($area, []);
         }
 
-        Kebersihan_ruang::create($data);
+        $kebersihan = Kebersihan_ruang::create($data);
+
+        // Set tgl_update_produksi = created_at + 1 jam
+        $kebersihan->update(['tgl_update_produksi' => Carbon::parse($kebersihan->created_at)->addHour()]);
 
         return redirect()->route('kebersihan_ruang.index')
-        ->with('success', 'Data Kebersihan Ruangan berhasil disimpan');
+            ->with('success', 'Data Kebersihan Ruangan berhasil disimpan');
     }
 
     public function edit(string $uuid)
@@ -78,8 +81,6 @@ class Kebersihan_ruangController extends Controller
     public function update(Request $request, string $uuid)
     {
         $kebersihan_ruang = Kebersihan_ruang::where('uuid', $uuid)->firstOrFail();
-        $username_updated = session('username_updated', 'Harnis');
-        $nama_produksi    = session('nama_produksi', 'Produksi RTM');
 
         $request->validate([
             'date'    => 'required|date',
@@ -88,8 +89,10 @@ class Kebersihan_ruangController extends Controller
         ]);
 
         $data = $request->only(['date', 'shift', 'catatan']);
-        $data['username_updated'] = $username_updated;
-        $data['nama_produksi']    = $nama_produksi;
+        $data['username_updated'] = Auth::user()->username;
+        $data['nama_produksi']    = session()->has('selected_produksi')
+                                    ? \App\Models\User::where('uuid', session('selected_produksi'))->first()->name
+                                    : null;
 
         $areas = [
             'rice_boiling', 'noodle', 'cr_rm', 'cs_1', 'cs_2',
@@ -103,8 +106,11 @@ class Kebersihan_ruangController extends Controller
 
         $kebersihan_ruang->update($data);
 
+        // Update tgl_update_produksi = updated_at + 1 jam
+        $kebersihan_ruang->update(['tgl_update_produksi' => Carbon::parse($kebersihan_ruang->updated_at)->addHour()]);
+
         return redirect()->route('kebersihan_ruang.index')
-        ->with('success', 'Data Kebersihan Ruangan berhasil diperbarui');
+            ->with('success', 'Data Kebersihan Ruangan berhasil diperbarui');
     }
 
     public function destroy($uuid)
@@ -113,6 +119,6 @@ class Kebersihan_ruangController extends Controller
         $kebersihan_ruang->delete();
 
         return redirect()->route('kebersihan_ruang.index')
-        ->with('success', 'Data Kebersihan Ruangan berhasil dihapus');
+            ->with('success', 'Data Kebersihan Ruangan berhasil dihapus');
     }
 }

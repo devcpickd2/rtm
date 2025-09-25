@@ -140,10 +140,10 @@
                                     @elseif ($dep->status_spv == 2)
                                     <!-- Link buka modal -->
                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#revisionModal{{ $dep->uuid }}" 
-                                     class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
+                                       class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
 
-                                     <!-- Modal -->
-                                     <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                       <!-- Modal -->
+                                       <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-danger text-white">
@@ -165,35 +165,35 @@
                                     @endif
                                 </td>
 
-                            <td class="text-center">
-                                <a href="{{ route('kebersihan_ruang.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
-                                <form action="{{ route('kebersihan_ruang.destroy', $dep->uuid) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Yakin ingin menghapus?')">
-                                    <i class="bi bi-trash"></i> Hapus
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="19" class="text-center">Belum ada data kebersihan ruang.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                                <td class="text-center">
+                                    <a href="{{ route('kebersihan_ruang.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                    <form action="{{ route('kebersihan_ruang.destroy', $dep->uuid) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Yakin ingin menghapus?')">
+                                        <i class="bi bi-trash"></i> Hapus
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="19" class="text-center">Belum ada data kebersihan ruang.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-        {{-- Pagination --}}
-        <div class="mt-3">
-            {{ $data->withQueryString()->links('pagination::bootstrap-5') }}
+            {{-- Pagination --}}
+            <div class="mt-3">
+                {{ $data->withQueryString()->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
-</div>
 </div>
 
 {{-- Auto-hide alert setelah 3 detik --}}
@@ -224,5 +224,51 @@
         padding-left: 2px !important;
         padding-right: 2px !important;
     }
+    /* Header tabel merah */
+    .table thead {
+        background-color: #dc3545 !important; /* merah gelap */
+        color: #fff;
+    }
+
+/* Baris tabel stripe merah muda */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8d7da; /* merah muda terang */
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #f5c2c7; /* merah muda agak gelap */
+}
+
+/* Hover baris merah gelap */
+.table tbody tr:hover {
+    background-color: #e4606d !important;
+    color: #fff;
+}
+
+/* Border tabel merah */
+.table-bordered th, .table-bordered td {
+    border-color: #dc3545;
+}
+
+/* Tombol aksi tetap jelas */
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #b02a37;
+    border-color: #a52834;
+}
 </style>
 @endsection

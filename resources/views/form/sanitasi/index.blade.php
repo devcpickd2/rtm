@@ -216,5 +216,51 @@
         padding-left: 2px !important;
         padding-right: 2px !important;
     }
+    /* Header tabel merah */
+    .table thead {
+        background-color: #dc3545 !important; /* merah gelap */
+        color: #fff;
+    }
+
+/* Baris tabel stripe merah muda */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8d7da; /* merah muda terang */
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #f5c2c7; /* merah muda agak gelap */
+}
+
+/* Hover baris merah gelap */
+.table tbody tr:hover {
+    background-color: #e4606d !important;
+    color: #fff;
+}
+
+/* Border tabel merah */
+.table-bordered th, .table-bordered td {
+    border-color: #dc3545;
+}
+
+/* Tombol aksi tetap jelas */
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #b02a37;
+    border-color: #a52834;
+}
 </style>
 @endsection

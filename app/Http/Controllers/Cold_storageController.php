@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Cold_storage;
 use App\Models\Produk;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class Cold_storageController extends Controller
 {
@@ -38,27 +40,26 @@ class Cold_storageController extends Controller
 
     public function store(Request $request)
     {
-        $username      = session('username', 'Putri');
-        $nama_produksi = session('nama_produksi', 'Produksi RTM');
-
         $request->validate([
-            'date'        => 'required|date',
-            'shift'       => 'required',
-            'pukul'       => 'required',
-            'catatan'     => 'nullable|string',
+            'date'           => 'required|date',
+            'shift'          => 'required',
+            'pukul'          => 'required',
+            'catatan'        => 'nullable|string',
             'nama_warehouse' => 'required',
-            'suhu_cs'     => 'nullable|array',
+            'suhu_cs'        => 'nullable|array',
         ]);
 
         $data = $request->only(['date', 'shift', 'pukul', 'catatan', 'nama_warehouse']);
-        $data['username']        = $username;
+        $data['username'] = Auth::user()->username; // ambil dari login
+        $data['suhu_cs']  = json_encode($request->input('suhu_cs', []), JSON_UNESCAPED_UNICODE);
         $data['status_warehouse'] = "1";
-        $data['status_spv']      = "0";
 
-        // Konversi suhu_cs ke JSON
-        $data['suhu_cs'] = json_encode($request->input('suhu_cs', []), JSON_UNESCAPED_UNICODE);
+        $cold_storage = Cold_storage::create($data);
 
-        Cold_storage::create($data);
+        // set tgl_update_warehouse = created_at + 1 jam
+        $cold_storage->update([
+            'tgl_update_warehouse' => Carbon::parse($cold_storage->created_at)->addHour()
+        ]);
 
         return redirect()->route('cold_storage.index')
         ->with('success', 'Data Pemantauan Suhu Produk di Cold Storage berhasil disimpan');
@@ -68,7 +69,6 @@ class Cold_storageController extends Controller
     {
         $cold_storage = Cold_storage::where('uuid', $uuid)->firstOrFail();
         $produks = Produk::all();
-
         $suhuData = !empty($cold_storage->suhu_cs) ? json_decode($cold_storage->suhu_cs, true) : [];
 
         return view('form.cold_storage.edit', compact('cold_storage', 'produks', 'suhuData'));
@@ -77,34 +77,36 @@ class Cold_storageController extends Controller
     public function update(Request $request, string $uuid)
     {
         $cold_storage = Cold_storage::where('uuid', $uuid)->firstOrFail();
-        $username_updated = session('username_updated', 'Harnis');
 
         $request->validate([
-            'date'        => 'required|date',
-            'shift'       => 'required',
-            'pukul'       => 'required',
-            'catatan'     => 'nullable|string',
+            'date'           => 'required|date',
+            'shift'          => 'required',
+            'pukul'          => 'required',
+            'catatan'        => 'nullable|string',
             'nama_warehouse' => 'required',
-            'suhu_cs'     => 'nullable|array',
+            'suhu_cs'        => 'nullable|array',
         ]);
 
-        $suhu_cs = $request->input('suhu_cs', []);
-
         $data = [
-            'date' => $request->date,
-            'shift' => $request->shift,
-            'pukul' => $request->pukul,
-            'catatan' => $request->catatan,
-            'username_updated' => $username_updated,
-            'nama_warehouse' => $request->nama_warehouse,
-            'suhu_cs' => json_encode($suhu_cs, JSON_UNESCAPED_UNICODE),
+            'date'             => $request->date,
+            'shift'            => $request->shift,
+            'pukul'            => $request->pukul,
+            'catatan'          => $request->catatan,
+            'nama_warehouse'   => $request->nama_warehouse,
+            'username_updated' => Auth::user()->username, // ambil dari login
+            'suhu_cs'          => json_encode($request->input('suhu_cs', []), JSON_UNESCAPED_UNICODE),
         ];
 
         $cold_storage->update($data);
 
-        return redirect()->route('cold_storage.index')->with('success', 'Data Pemantauan Suhu Produk di Cold Storage berhasil diperbarui');
-    }
+        // update tgl_update_warehouse = updated_at + 1 jam
+        $cold_storage->update([
+            'tgl_update_warehouse' => Carbon::parse($cold_storage->updated_at)->addHour()
+        ]);
 
+        return redirect()->route('cold_storage.index')
+        ->with('success', 'Data Pemantauan Suhu Produk di Cold Storage berhasil diperbarui');
+    }
 
     public function destroy($uuid)
     {

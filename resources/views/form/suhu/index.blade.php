@@ -52,8 +52,8 @@
                             <th>Date | Shift</th>
                             <th>Pukul</th>
                             <th>Chillroom<br><small>(0–4 °C)</small></th>
-                            <th>Cold Stor.<br>1<br><small>(-22 – -18 °C)</small></th>
-                            <th>Cold Stor.<br>2<br><small>(-22 – -18 °C)</small></th>
+                            <th>Cold Stor.<br>1<br><small>(-22 – (-18) °C)</small></th>
+                            <th>Cold Stor.<br>2<br><small>(-22 – (-18) °C)</small></th>
                             <th>Anteroom<br>RM<br><small>(8–10 °C)</small></th>
                             <th>Seasoning<br><small>(22–30 °C / ≤75% RH)</small></th>
                             <th>Prep.<br>Room<br><small>(9–15 °C)</small></th>
@@ -64,7 +64,7 @@
                             <th>Topping<br><small>(9–15 °C)</small></th>
                             <th>Packing<br><small>(9–15 °C)</small></th>
                             <th>DS<br><small>(20–30 °C / ≤75% RH)</small></th>
-                            <th>Cold Stor.<br>FG<br><small>(-20 – -18 °C)</small></th>
+                            <th>Cold Stor.<br>FG<br><small>(-20 – (-18) °C)</small></th>
                             <th>Anteroom<br>FG<br><small>(0–10 °C)</small></th>
                             <th>Produksi</th>
                             <th>SPV</th>
@@ -159,10 +159,10 @@
                                     @elseif ($dep->status_spv == 2)
                                     <!-- Link buka modal -->
                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#revisionModal{{ $dep->uuid }}" 
-                                       class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
+                                     class="text-danger fw-bold text-decoration-none" style="cursor: pointer;">Revision</a>
 
-                                       <!-- Modal -->
-                                       <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
+                                     <!-- Modal -->
+                                     <div class="modal fade" id="revisionModal{{ $dep->uuid }}" tabindex="-1" aria-labelledby="revisionModalLabel{{ $dep->uuid }}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-danger text-white">
@@ -243,5 +243,51 @@
         padding-left: 2px !important;
         padding-right: 2px !important;
     }
+    /* Header tabel merah */
+    .table thead {
+        background-color: #dc3545 !important; /* merah gelap */
+        color: #fff;
+    }
+
+/* Baris tabel stripe merah muda */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8d7da; /* merah muda terang */
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #f5c2c7; /* merah muda agak gelap */
+}
+
+/* Hover baris merah gelap */
+.table tbody tr:hover {
+    background-color: #e4606d !important;
+    color: #fff;
+}
+
+/* Border tabel merah */
+.table-bordered th, .table-bordered td {
+    border-color: #dc3545;
+}
+
+/* Tombol aksi tetap jelas */
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #b02a37;
+    border-color: #a52834;
+}
 </style>
 @endsection

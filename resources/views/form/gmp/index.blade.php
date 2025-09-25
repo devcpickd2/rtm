@@ -67,58 +67,53 @@
                             <td class="text-center">{{ $no++ }}</td>
                             <td>{{ \Carbon\Carbon::parse($dep->date)->format('d-m-Y') }}</td>   
                             @php
-                            function hitungPresentase($json) {
-                                if (!$json) return 0;
+                            if (!function_exists('hitungPresentase')) {
+                                function hitungPresentase($json) {
+                                    if (!$json) return 0;
 
-                                $data = is_array($json) ? $json : json_decode($json, true);
-                                if (!$data) return 0;
+                                    $data = is_array($json) ? $json : json_decode($json, true);
+                                    if (!$data) return 0;
 
-                                $total = 0;
-                                $count = 0;
+                                    $total = 0;
+                                    $count = 0;
 
-                                foreach ($data as $row) {
-                                    foreach ($row as $key => $val) {
-                                        if ($key !== 'nama_karyawan') {
-                                            $total++;
-                                            if ($val == 1) {
-                                                $count++;
+                                    foreach ($data as $row) {
+                                        foreach ($row as $key => $val) {
+                                            if ($key !== 'nama_karyawan') {
+                                                $total++;
+                                                if ($val == 1) $count++;
                                             }
                                         }
                                     }
-                                }
 
-                                return $total > 0 ? round(($count / $total) * 100, 1) : 0;
+                                    return $total > 0 ? round(($count / $total) * 100, 1) : 0;
+                                }
                             }
 
-                            function topKaryawan($json, $limit = 3) {
-                                if (!$json) return [];
+                            if (!function_exists('topKaryawan')) {
+                                function topKaryawan($json, $limit = 3) {
+                                    if (!$json) return [];
 
-                                $data = is_array($json) ? $json : json_decode($json, true);
-                                if (!$data) return [];
+                                    $data = is_array($json) ? $json : json_decode($json, true);
+                                    if (!$data) return [];
 
-                                $scores = [];
-                                foreach ($data as $row) {
-                                    $nama = $row['nama_karyawan'] ?? 'Tanpa Nama';
-                                    $count = 0;
-                                    foreach ($row as $key => $val) {
-                                        if ($key !== 'nama_karyawan' && $val == 1) {
-                                            $count++;
+                                    $scores = [];
+                                    foreach ($data as $row) {
+                                        $nama = $row['nama_karyawan'] ?? 'Tanpa Nama';
+                                        $count = 0;
+                                        foreach ($row as $key => $val) {
+                                            if ($key !== 'nama_karyawan' && $val == 1) $count++;
                                         }
+                                        $scores[] = ['nama' => $nama, 'nilai' => $count];
                                     }
-                                    $scores[] = [
-                                    'nama' => $nama,
-                                    'nilai' => $count
-                                    ];
-                                }
 
-                                // urutkan berdasarkan nilai tertinggi
-                                usort($scores, function($a, $b) {
-                                    return $b['nilai'] <=> $a['nilai'];
-                                    });
+                                    usort($scores, function($a, $b) { return $b['nilai'] <=> $a['nilai']; });
 
-                                    return array_slice($scores, 0, $limit);
+                                        return array_slice($scores, 0, $limit);
+                                    }
                                 }
                                 @endphp
+
 
                                 {{-- Pemakaian di tabel --}}
                                 <td>
@@ -276,5 +271,51 @@
             padding-left: 2px !important;
             padding-right: 2px !important;
         }
-    </style>
-    @endsection
+        /* Header tabel merah */
+        .table thead {
+            background-color: #dc3545 !important; /* merah gelap */
+            color: #fff;
+        }
+
+/* Baris tabel stripe merah muda */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8d7da; /* merah muda terang */
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #f5c2c7; /* merah muda agak gelap */
+}
+
+/* Hover baris merah gelap */
+.table tbody tr:hover {
+    background-color: #e4606d !important;
+    color: #fff;
+}
+
+/* Border tabel merah */
+.table-bordered th, .table-bordered td {
+    border-color: #dc3545;
+}
+
+/* Tombol aksi tetap jelas */
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #b02a37;
+    border-color: #a52834;
+}
+</style>
+@endsection

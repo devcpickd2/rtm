@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Sanitasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class SanitasiController extends Controller
 {
@@ -37,9 +39,6 @@ class SanitasiController extends Controller
 
     public function store(Request $request)
     {
-        $username      = session('username', 'Putri');
-        $nama_produksi = session('nama_produksi', 'Produksi RTM');
-
         $request->validate([
             'date'  => 'required|date',
             'pukul' => 'required',
@@ -59,40 +58,34 @@ class SanitasiController extends Controller
             'keterangan', 'catatan'
         ]);
 
-        // Upload gambar Foot Basin
         if ($request->hasFile('aktual_footbasin')) {
             $data['aktual_footbasin'] = $request->file('aktual_footbasin')->store('uploads/footbasin', 'public');
         }
 
-        // Upload gambar Hand Basin
         if ($request->hasFile('aktual_handbasin')) {
             $data['aktual_handbasin'] = $request->file('aktual_handbasin')->store('uploads/handbasin', 'public');
         }
 
-        $data['username']      = $username;
-        $data['nama_produksi'] = $nama_produksi;
-        $data['status_produksi'] = "1";
-        $data['status_spv'] = "0";
+        $data['username']         = Auth::user()->username;
+        $data['username_updated'] = Auth::user()->username;
+        $data['nama_produksi']    = session()->has('selected_produksi') 
+        ? \App\Models\User::where('uuid', session('selected_produksi'))->first()->name 
+        : null;
+        $data['status_produksi']  = "1";
+        $data['status_spv']       = "0";
 
-        Sanitasi::create($data);
+        $sanitasi = Sanitasi::create($data);
+
+    // Set tgl_update_produksi = created_at + 1 jam
+        $sanitasi->update(['tgl_update_produksi' => Carbon::parse($sanitasi->created_at)->addHour()]);
 
         return redirect()->route('sanitasi.index')->with('success', 'Data sanitasi berhasil disimpan');
-    }
-
-    public function edit(string $uuid)
-    {
-        $sanitasi = Sanitasi::where('uuid', $uuid)->firstOrFail();
-        return view('form.sanitasi.edit', compact('sanitasi'));
     }
 
     public function update(Request $request, string $uuid)
     {
         $sanitasi = Sanitasi::where('uuid', $uuid)->firstOrFail();
 
-    // Ambil username dan nama produksi dari session
-        $username_updated = session('username_updated', 'Harnis');
-        $nama_produksi = session('nama_produksi', 'Produksi RTM');
-
         $request->validate([
             'date'  => 'required|date',
             'pukul' => 'required',
@@ -112,18 +105,15 @@ class SanitasiController extends Controller
             'keterangan', 'catatan'
         ]);
 
-    // Upload gambar Foot Basin
         if ($request->hasFile('aktual_footbasin')) {
             if ($sanitasi->aktual_footbasin && \Storage::disk('public')->exists($sanitasi->aktual_footbasin)) {
                 \Storage::disk('public')->delete($sanitasi->aktual_footbasin);
             }
             $data['aktual_footbasin'] = $request->file('aktual_footbasin')->store('uploads/footbasin', 'public');
         } else {
-        // tetap pakai file lama
             $data['aktual_footbasin'] = $sanitasi->aktual_footbasin;
         }
 
-    // Upload gambar Hand Basin
         if ($request->hasFile('aktual_handbasin')) {
             if ($sanitasi->aktual_handbasin && \Storage::disk('public')->exists($sanitasi->aktual_handbasin)) {
                 \Storage::disk('public')->delete($sanitasi->aktual_handbasin);
@@ -133,11 +123,15 @@ class SanitasiController extends Controller
             $data['aktual_handbasin'] = $sanitasi->aktual_handbasin;
         }
 
-    // Tambahkan info username update dan nama produksi
-        $data['username_updated'] = $username_updated;
-        $data['nama_produksi'] = $nama_produksi;
+        $data['username_updated'] = Auth::user()->username;
+        $data['nama_produksi']    = session()->has('selected_produksi') 
+        ? \App\Models\User::where('uuid', session('selected_produksi'))->first()->name 
+        : null;
 
         $sanitasi->update($data);
+
+    // Update tgl_update_produksi = updated_at + 1 jam
+        $sanitasi->update(['tgl_update_produksi' => Carbon::parse($sanitasi->updated_at)->addHour()]);
 
         return redirect()->route('sanitasi.index')->with('success', 'Data sanitasi berhasil diperbarui');
     }

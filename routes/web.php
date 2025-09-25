@@ -41,11 +41,34 @@ use App\Http\Controllers\{
     Sample_bulananController,
     Cold_storageController,
     Sample_retainController,
-    SubmissionController
+    SubmissionController, 
+    AuthController, 
+    UserController,
+    DashboardController
 };
 
-// Dashboard
-Route::get('/', fn() => view('dashboard'))->name('dashboard');
+Route::get('/', function() {
+    return redirect()->route('login');
+});
+
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::middleware('auth')->group(function() {
+    Route::resource('user', UserController::class);
+});
+
+// routes/api.php
+Route::post('api/plant-sync', [UserController::class, 'syncPlant']);
+Route::post('api/user-sync', [UserController::class, 'syncUser']);
+Route::post('api/user-desync', [UserController::class, 'desyncUser']);
+
+  // Dashboard
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::post('/set-produksi', [DashboardController::class, 'setProduksi'])->name('set.produksi');
+
+// Route::get('/', fn() => view('dashboard'))->name('dashboard');
 
 // Halo test
 Route::get('/halo', [HaloController::class, 'index']);

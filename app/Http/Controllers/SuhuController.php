@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Suhu;
 use Illuminate\Http\Request;
+use App\Models\Suhu;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class SuhuController extends Controller
 {
@@ -14,18 +16,18 @@ class SuhuController extends Controller
         $end_date   = $request->input('end_date');
 
         $data = Suhu::query()
-        ->when($search, function ($query) use ($search) {
-            $query->where('username', 'like', "%{$search}%")
-            ->orWhere('nama_produksi', 'like', "%{$search}%")
-            ->orWhere('shift', 'like', "%{$search}%");
-        })
-        ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
-            $query->whereBetween('date', [$start_date, $end_date]);
-        })
-        ->orderBy('date', 'desc')
-        ->orderBy('pukul', 'desc')
-        ->paginate(10)
-        ->appends($request->all());
+            ->when($search, function ($query) use ($search) {
+                $query->where('username', 'like', "%{$search}%")
+                      ->orWhere('nama_produksi', 'like', "%{$search}%")
+                      ->orWhere('shift', 'like', "%{$search}%");
+            })
+            ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
+                $query->whereBetween('date', [$start_date, $end_date]);
+            })
+            ->orderBy('date', 'desc')
+            ->orderBy('pukul', 'desc')
+            ->paginate(10)
+            ->appends($request->all());
 
         return view('form.suhu.index', compact('data', 'search', 'start_date', 'end_date'));
     }
@@ -37,9 +39,6 @@ class SuhuController extends Controller
 
     public function store(Request $request)
     {
-        $username      = session('username', 'Putri');
-        $nama_produksi = session('nama_produksi', 'Produksi RTM');
-
         $request->validate([
             'date'  => 'required|date',
             'pukul' => 'required',
@@ -76,28 +75,30 @@ class SuhuController extends Controller
             'keterangan', 'catatan'
         ]);
 
-        $data['username']      = $username;
-        $data['nama_produksi'] = $nama_produksi;
+        $data['username']      = Auth::user()->username;
+        $data['nama_produksi'] = session()->has('selected_produksi') 
+                                 ? \App\Models\User::where('uuid', session('selected_produksi'))->first()->name 
+                                 : null;
         $data['status_produksi'] = "1";
         $data['status_spv'] = "0";
 
-        Suhu::create($data);
+        $suhu = Suhu::create($data);
+
+        // Set tgl_update_produksi = created_at + 1 jam
+        $suhu->update(['tgl_update_produksi' => Carbon::parse($suhu->created_at)->addHour()]);
 
         return redirect()->route('suhu.index')->with('success', 'Data Suhu berhasil disimpan');
     }
 
-    public function edit(string $uuid)
+    public function edit($uuid)
     {
         $suhu = Suhu::findOrFail($uuid);
         return view('form.suhu.edit', compact('suhu'));
     }
 
-    public function update(Request $request, string $uuid)
+    public function update(Request $request, $uuid)
     {
         $suhu = Suhu::findOrFail($uuid);
-
-        $username_updated = session('username_updated', 'Harnis');
-        $nama_produksi = session('nama_produksi', 'Produksi RTM');
 
         $request->validate([
             'date'  => 'required|date',
@@ -135,24 +136,24 @@ class SuhuController extends Controller
             'keterangan', 'catatan'
         ]);
 
-        $data['username_updated'] = $username_updated;
-        $data['nama_produksi'] = $nama_produksi;
+        $data['username_updated'] = Auth::user()->username;
+        $data['nama_produksi'] = session()->has('selected_produksi') 
+                                 ? \App\Models\User::where('uuid', session('selected_produksi'))->first()->name 
+                                 : null;
 
         $suhu->update($data);
+
+        // Update tgl_update_produksi = updated_at + 1 jam
+        $suhu->update(['tgl_update_produksi' => Carbon::parse($suhu->updated_at)->addHour()]);
 
         return redirect()->route('suhu.index')->with('success', 'Data Suhu berhasil diperbarui');
     }
 
-        // Hapus data suhu berdasarkan UUID
     public function destroy($uuid)
     {
-        // Cari data suhu berdasarkan UUID
         $suhu = Suhu::where('uuid', $uuid)->firstOrFail();
-
-        // Hapus data
         $suhu->delete();
 
-        // Redirect ke halaman index
         return redirect()->route('suhu.index')->with('success', 'Data Suhu berhasil dihapus');
     }
 }

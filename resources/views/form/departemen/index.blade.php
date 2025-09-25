@@ -30,28 +30,83 @@
                     <tr>
                         <td>{{ \Carbon\Carbon::parse($dep->created_at)->format('d-m-Y H:i') }}</td>
                         <td>{{ $dep->nama }}</td>
-                        <td>
-                            <a href="{{ route('departemen.edit', $dep->id) }}" class="btn btn-warning btn-sm">✏️ Edit</a>
-                            <form action="{{ route('departemen.destroy', $dep->id) }}" method="POST" class="d-inline">
+                        <td class="text-center">
+                            <a href="{{ route('departemen.edit', $dep->uuid) }}" class="btn btn-warning btn-sm me-1">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form action="{{ route('departemen.destroy', $dep->uuid) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button
-                                    type="submit"
-                                    class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Yakin ingin menghapus?')">
-                                    🗑 Hapus
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="3" class="text-center">Belum ada data departemen.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Yakin ingin menghapus?')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="3" class="text-center">Belum ada data departemen.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
+</div>
+<style>
+    .pagination {
+        justify-content: end;
+    }
+    .pagination .page-link {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+    }
+    /* Header tabel merah */
+    .table thead {
+        background-color: #dc3545 !important; /* merah gelap */
+        color: #fff;
+    }
+
+/* Baris tabel stripe merah muda */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8d7da; /* merah muda terang */
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #f5c2c7; /* merah muda agak gelap */
+}
+
+/* Hover baris merah gelap */
+.table tbody tr:hover {
+    background-color: #e4606d !important;
+    color: #fff;
+}
+
+/* Border tabel merah */
+.table-bordered th, .table-bordered td {
+    border-color: #dc3545;
+}
+
+/* Tombol aksi tetap jelas */
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #b02a37;
+    border-color: #a52834;
+}
+</style>
 @endsection

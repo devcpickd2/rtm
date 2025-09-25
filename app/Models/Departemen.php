@@ -12,5 +12,18 @@ class Departemen extends Model
 
     protected $table = 'departemens';
 
-    protected $fillable = ['nama', 'uuid'];
+    protected $fillable = ['uuid', 'nama'];
+
+    // pakai route binding berdasarkan UUID
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
+
+    // app/Models/Departemen.php
+    public static function getByName($name)
+    {
+        return self::where('nama', 'like', "%{$name}%")->first();
+    }
+
 }

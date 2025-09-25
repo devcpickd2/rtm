@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Gmp;
 use App\Models\Produksi;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class GmpController extends Controller
 {
@@ -25,6 +28,7 @@ class GmpController extends Controller
             $query->whereBetween('date', [$start_date, $end_date]);
         })
         ->orderBy('date', 'desc')
+        ->orderBy('created_at', 'desc')
         ->paginate(10)
         ->appends($request->all());
 
@@ -33,8 +37,7 @@ class GmpController extends Controller
 
     public function create()
     {
-        // Ambil karyawan berdasarkan area
-        $karyawanNoodle = Produksi::where('area', 'Noodle & Rice')->pluck('nama_karyawan')->toArray();
+        $karyawanNoodle  = Produksi::where('area', 'Noodle & Rice')->pluck('nama_karyawan')->toArray();
         $karyawanCooking = Produksi::where('area', 'Cooking')->pluck('nama_karyawan')->toArray();
         $karyawanPacking = Produksi::where('area', 'Packing')->pluck('nama_karyawan')->toArray();
 
@@ -43,27 +46,28 @@ class GmpController extends Controller
 
     public function store(Request $request)
     {
-        $username      = session('username', 'Putri');
-        $nama_produksi = session('nama_produksi', 'Produksi RTM');
-
         $request->validate([
             'date' => 'required|date',
         ]);
 
         $data = $request->only(['date']);
-        $data['username']      = $username;
-        $data['nama_produksi'] = $nama_produksi;
+        $data['username'] = Auth::user()->username;
+        $data['username_updated'] = Auth::user()->username;
+        $data['nama_produksi'] = session()->has('selected_produksi')
+        ? User::where('uuid', session('selected_produksi'))->first()->name
+        : null;
         $data['status_produksi'] = "1";
         $data['status_spv'] = "0";
 
-        // simpan tiap area ke kolom masing-masing
         $areas = ['noodle_rice', 'cooking', 'packing'];
-
         foreach ($areas as $area) {
             $data[$area] = $request->input($area, []);
         }
 
-        Gmp::create($data);
+        $gmp = Gmp::create($data);
+
+        // Set tgl_update_produksi = created_at + 1 jam
+        $gmp->update(['tgl_update_produksi' => Carbon::parse($gmp->created_at)->addHour()]);
 
         return redirect()->route('gmp.index')
         ->with('success', 'Data GMP Karyawan berhasil disimpan');
@@ -73,7 +77,7 @@ class GmpController extends Controller
     {
         $gmp = Gmp::where('uuid', $uuid)->firstOrFail();
 
-        $karyawanNoodle = Produksi::where('area', 'Noodle & Rice')->pluck('nama_karyawan')->toArray();
+        $karyawanNoodle  = Produksi::where('area', 'Noodle & Rice')->pluck('nama_karyawan')->toArray();
         $karyawanCooking = Produksi::where('area', 'Cooking')->pluck('nama_karyawan')->toArray();
         $karyawanPacking = Produksi::where('area', 'Packing')->pluck('nama_karyawan')->toArray();
 
@@ -83,30 +87,32 @@ class GmpController extends Controller
     public function update(Request $request, string $uuid)
     {
         $gmp = Gmp::where('uuid', $uuid)->firstOrFail();
-        $username_updated = session('username_updated', 'Harnis');
-        $nama_produksi    = session('nama_produksi', 'Produksi RTM');
 
         $request->validate([
             'date' => 'required|date',
         ]);
 
         $data = $request->only(['date']);
-        $data['username_updated'] = $username_updated;
-        $data['nama_produksi']    = $nama_produksi;
+        $data['username_updated'] = Auth::user()->username;
+        $data['nama_produksi'] = session()->has('selected_produksi')
+        ? User::where('uuid', session('selected_produksi'))->first()->name
+        : null;
 
         $areas = ['noodle_rice', 'cooking', 'packing'];
-
         foreach ($areas as $area) {
             $data[$area] = $request->input($area, []);
         }
 
         $gmp->update($data);
 
+        // Update tgl_update_produksi = updated_at + 1 jam
+        $gmp->update(['tgl_update_produksi' => Carbon::parse($gmp->updated_at)->addHour()]);
+
         return redirect()->route('gmp.index')
         ->with('success', 'Data GMP Karyawan berhasil diperbarui');
     }
 
-    public function destroy($uuid)
+    public function destroy(string $uuid)
     {
         $gmp = Gmp::where('uuid', $uuid)->firstOrFail();
         $gmp->delete();
