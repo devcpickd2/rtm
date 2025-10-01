@@ -18,15 +18,17 @@
     .header-top { font-size:10px; font-weight:600; }
     .title { text-align:center; font-weight:700; font-size:14px; margin:4px 0 6px; }
 
-    .meta { width:100%; margin-bottom:6px; }
+    .meta { margin-bottom:6px; }
     .meta td { padding:2px 0; }
+
+    table tr td{text-align: center;}
 
     table.grid { width:100%; border-collapse:collapse; }
     table.grid th, table.grid td { border:1px solid #000; padding:3px 4px; }
     table.grid th { text-align:center; font-weight:700; }
     table.grid td { height:20px; vertical-align:top; }
 
-    .no-col { width:12mm; text-align:center; }
+    .no-col {  text-align:center; }
     .cond-col { width:25mm; }
     .jenis-col { width:25mm; }
     .jumlah-col { width:20mm; text-align:center; }
@@ -42,6 +44,7 @@
     .note .heading { font-weight:700; }
 
     .catatan { margin-top:4px; font-size:9px; }
+    .catatan ul{margin:0; padding-left: 16px;}
     .line { border-bottom:1px solid #000; height:16px; }
 
     .sign { margin-top:12mm; width:100%; font-size:10px; }
@@ -49,7 +52,7 @@
     .sign .slot { width:50%; padding:0 10mm; }
     .sign .line-sign { border-bottom:1px solid #000; height:0; margin:14mm 0 3px; }
 
-    .doc-code { position: fixed; right: 12mm; bottom: 18mm; font-size:9px; }
+    .doc-code { font-size:9px; font-style: italic; text-align: right;}
 </style>
 </head>
 <body>
@@ -65,21 +68,21 @@
     <table class="grid">
         <thead>
             <tr>
-                <th rowspan="2" class="no-col">No.</th>
+                <th rowspan="2" class="no-col" style="width: 15px;">No.</th>
                 <th rowspan="2" class="cond-col">Kondisi Ruangan</th>
                 <th rowspan="2" class="jenis-col">Jenis Produk</th>
-                <th rowspan="2" class="jumlah-col">Jumlah</th>
-                <th rowspan="2" class="kode-col">Kode Produksi</th>
-                <th colspan="4">Sebelum Proses Thawing</th>
+                <th colspan="5">Sebelum Proses Thawing</th>
                 <th colspan="3">Setelah Proses Thawing</th>
             </tr>
             <tr>
+                <th class="jumlah-col" style="width: 15px;">Jumlah</th>
+                <th class="kode-col">Kode Produksi</th>
                 <th class="cond-prod-col">Kondisi Produk</th>
-                <th class="suhu-col">Suhu Ruangan °C</th>
+                <th class="suhu-col">Suhu<br> Ruangan °C</th>
                 <th class="pukul-col">Mulai Thawing Pukul</th>
-                <th class="selesai-col">Selesai Thawing Pukul</th>
+                <th class="selesai-col" style="width: 50px;">Selesai Thawing Pukul</th>
                 <th class="cond-prod-after-col">Kondisi Produk</th>
-                <th class="suhu-final-col">Suhu Produk °C (≤10 °C)</th>
+                <th class="suhu-final-col">Suhu Produk °C <br>(5-10°C)</th>
             </tr>
         </thead>
         <tbody>
@@ -90,11 +93,28 @@
                 <td>{{ $item->jenis_produk }}</td>
                 <td>{{ $item->jumlah }}</td>
                 <td>{{ $item->kode_produksi }}</td>
-                <td>{{ $item->kondisi_produk }}<br>Keterangan: {{ $item->keterangan_kondisi }}</td>
+                <!-- <td>{{ $item->kondisi_produk }}<br>Keterangan: {{ $item->keterangan_kondisi }}</td> -->
+                <td>
+                    <table style="border-collapse:collapse;">
+                        <tr>
+                            <td style="border-top:0;border-bottom:0;border-left:0;width:50%;">{{ $item->kondisi_produk }}</td>
+                            <td style="border-top:0;border-bottom:0;border-left:0;border-right:0;width:50%;">Keterangan:<br>{{ $item->keterangan_kondisi }}</td>
+                        </tr>
+                    </table>
+                </td>
                 <td>{{ $item->suhu_ruangan }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->mulai_thawing)->format('H:i') }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->selesai_thawing)->format('H:i') }}</td>
-                <td>{{ $item->kondisi_produk_setelah }}<br>Keterangan: {{ $item->keterangan_kondisi_setelah }}</td>
+                <!-- <td>{{ $item->kondisi_produk_setelah }}<br>Keterangan: {{ $item->keterangan_kondisi_setelah }}</td> -->
+                <td>
+                    <table style="border-collapse:collapse;">
+                        <tr>
+                            <td style="border-top:0;border-bottom:0;border-left:0;">{{ $item->kondisi_produk_setelah }}</td>
+                            <td style="border-top:0;border-bottom:0;border-left:0;">Keterangan:<br>{{ $item->keterangan_kondisi_setelah }}</td>
+                            <td style="border-top:0;border-bottom:0;border-left:0;border-right:0;">Jumlah:<br>{{ $item->jumlah_setelah }}<br></td>
+                        </tr>
+                    </table>
+                </td>
                 <td>{{ $item->suhu_produk }}</td>
             </tr>
         @empty
@@ -104,6 +124,7 @@
         @endforelse
         </tbody>
     </table>
+    <div class="doc-code">QR 20/00</div>
 
     <div class="note">
         <div class="heading">Keterangan:</div>
@@ -113,7 +134,13 @@
 
     <div class="catatan">
         <div>Catatan:</div>
-        <div class="line"></div>
+        <div>
+            <ul>
+                @foreach($data as $index => $item)
+                    <li>{{ $item->catatan ?? '-' }}</li>
+                @endforeach 
+            </ul>
+        </div>
     </div>
 
     <table class="sign">
@@ -131,6 +158,6 @@
         </tr>
     </table>
 
-    <div class="doc-code">{{ $doc_code }}</div>
+    
 </body>
 </html>

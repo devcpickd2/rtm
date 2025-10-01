@@ -26,6 +26,12 @@ use App\Http\Controllers\{
     KontaminasiController,
     XrayController
 };
+use Spatie\LaravelPdf\Facades\Pdf;
+Route::get('pdf/steamer', function () {
+    return Pdf::view('pdf.pemeriksaan-steamer2', ['data' => 'contoh data'])
+        ->format('a4')
+        ->name('invoice.pdf');
+});
 
 // Halo test
 Route::get('/halo', [HaloController::class, 'index']);

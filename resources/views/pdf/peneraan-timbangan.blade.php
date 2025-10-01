@@ -40,6 +40,7 @@
     .note li { margin: 1px 0; }
 
     .catatan { margin-top: 6px; font-size: 10px; }
+    .catatan ul{margin:0; padding-left: 16px;}
     .line { border-bottom: 1px solid #000; height: 16px; }
 
     .footer-area { width: 100%; margin-top: 10mm; }
@@ -48,7 +49,7 @@
     .sign { height: 20mm; border-bottom: 1px solid #000; margin-bottom: 3px; }
     .role { font-size: 10px; text-align: center; }
 
-    .doc-code { position: fixed; right: 14mm; bottom: 28mm; font-size: 9px; }
+    .doc-code { font-size: 9px; text-align: right;font-style: italic;}
 </style>
 </head>
 <body>
@@ -93,36 +94,53 @@
         @endforelse
         </tbody>
     </table>
-
-    <div class="note">
-        <div class="heading">Keterangan :</div>
-        <ul>
-            <li>Tera timbangan dilakukan di setiap awal produksi</li>
-            <li>Timbangan ditera menggunakan anak timbangan standar</li>
-            <li>Jika ada selisih angka timbang dengan berat timbangan standar, beri keterangan (+) atau (-) angka selisih</li>
-        </ul>
-    </div>
-
-    <div class="catatan">
-        <div>Catatan:</div>
-        <div class="line"></div>
-    </div>
-
-    <table class="footer-area">
+    <div class="doc-code">QR 18 / 01</div>
+    <table>
         <tr>
-            <td style="width:50%"></td>
-            <td class="lbl" style="text-align:center;">Dibuat oleh</td>
-            <td style="width:20mm"></td>
-            <td class="lbl" style="text-align:center;">Diketahui oleh</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><div class="sign"></div><div class="role">QC</div></td>
-            <td></td>
-            <td><div class="sign"></div><div class="role">QC SPV</div></td>
+            <td style="width:60%">
+                <div class="note">
+                    <div class="heading">Keterangan :</div>
+                    <ul>
+                        <li>Tera timbangan dilakukan di setiap awal produksi</li>
+                        <li>Timbangan ditera menggunakan anak timbangan standar</li>
+                        <li>Jika ada selisih angka timbang dengan berat timbangan standar, beri keterangan (+) atau (-) angka selisih</li>
+                    </ul>
+                </div>
+
+                <div class="catatan">
+                    <div>Catatan:</div>
+                    <div>
+                        <ul>
+                            @foreach($data as $index => $item)
+                                <li>{{ $item->catatan ?? '-' }}</li>
+                            @endforeach 
+                        </ul>
+                    </div>
+                </div>
+            </td>
+            <td style="width:40%">
+                <table class="footer-area">
+                    <tr>
+                        <td></td>
+                        <td class="lbl" style="text-align:center;">Dibuat oleh</td>
+                        <td></td>
+                        <td class="lbl" style="text-align:center;">Diketahui oleh</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><div class="sign"></div><div class="role">QC</div></td>
+                        <td></td>
+                        <td><div class="sign"></div><div class="role">QC SPV</div></td>
+                    </tr>
+                </table>
+            </td>
         </tr>
     </table>
 
-    <div class="doc-code">{{ $doc_code }}</div>
+    
+
+    
+
+    
 </body>
 </html>

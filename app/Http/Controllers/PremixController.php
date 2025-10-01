@@ -122,12 +122,18 @@ class PremixController extends Controller
         }
 
         $data = Premix::whereDate('date', $exportDate)->get();
+        $shift = Premix::whereDate('date', $exportDate)
+            ->select('shift')
+            ->distinct()
+            ->pluck('shift')
+            ->implode(',');
 
         return Pdf::view('pdf.verifikasi-premix', [
             'company'  => 'PT Contoh Pangan Indonesia',
             'doc_code' => 'QF-2009',
             'tanggal'  => Carbon::parse($exportDate)->format('d/m/Y'),
             'data'     => $data,
+            'shift'    => $shift
         ])
         ->format('a4')
         ->name('verifikasi-premix-' . $exportDate . '.pdf');

@@ -13,7 +13,7 @@
 
     $data      = $data      ?? collect(); // Ensure $data is a collection
     $firstItem = $data->isNotEmpty() ? $data->first() : null;
-    $thumblsData = $firstItem ? json_decode($firstItem->thumbls, true) : [];
+    $thumblsData = [];
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -74,7 +74,7 @@
             $data = collect([ (object)['thumbls' => '[]', 'catatan' => null, 'status_produksi' => 0, 'status_spv' => 0] ]);
         }
         $firstItem = $data->first(); // Re-assign firstItem after potentially creating dummy data
-        $thumblsData = $firstItem ? (json_decode($firstItem->thumbls, true) ?? []) : [];
+        $thumblsData = [];
         if (empty($thumblsData)) {
             $thumblsData = [[]]; // Ensure at least one empty item to render table structure
         }
@@ -89,16 +89,16 @@
             @endfor
         </tr>
 
-        {{-- ====== DEFROSTASI DAGING ====== --}}
-        <tr><td colspan="{{ $cols+1 }}" class="section">DEFROSTASI DAGING</td></tr>
+        {{-- ====== IDENTIFIKASI  DAGING ====== --}}
+        <tr><td colspan="{{ $cols+1 }}" class="section">IDENTIFIKASI  DAGING</td></tr>
         <tr>
-            <td class="sub-label">Hasil Pemisahan Karkas</td>
+            <td class="sub-label">Asal</td>
             @for($c=0; $c < $cols; $c++)
                 <td class="cell">{{ implode(', ', $thumblsData[$c]['hasil_tumbling'] ?? ['-']) }}</td>
             @endfor
         </tr>
         <tr>
-            <td class="sub-label">Jenis Daging</td>
+            <td class="sub-label">Tanggal Produksi/Kode</td>
             @for($c=0; $c < $cols; $c++)
                 <td class="cell">{{ $thumblsData[$c]['daging'] ?? '-' }}</td>
             @endfor
@@ -110,21 +110,27 @@
             @endfor
         </tr>
         <tr>
-            <td class="sub-label">Kadar Air (%)</td>
+            <td class="sub-label">Suhu daging (oC)</td>
             @for($c=0; $c < $cols; $c++)
                 <td class="cell">-</td> {{-- No direct mapping --}}
             @endfor
         </tr>
         <tr>
-            <td class="sub-label">Suhu (°C)</td>
+            <td class="sub-label">(0 - 10 °C)</td>
             @for($c=0; $c < $cols; $c++)
                 <td class="cell">-</td> {{-- No direct mapping --}}
             @endfor
         </tr>
         <tr>
-            <td class="sub-label">Keterangan</td>
+            <td class="sub-label">Rata-rata</td>
             @for($c=0; $c < $cols; $c++)
-                <td class="cell">{{ $thumblsData[$c]['kondisi'] ?? '-' }}</td>
+                <td class="cell">-</td> {{-- No direct mapping --}}
+            @endfor
+        </tr>
+        <tr>
+            <td class="sub-label">Kondisi daging</td>
+            @for($c=0; $c < $cols; $c++)
+                <td class="cell">-</td> {{-- No direct mapping --}}
             @endfor
         </tr>
 
@@ -137,46 +143,25 @@
             @endfor
         </tr>
         <tr>
-            <td class="sub-label">Bahan minor</td>
+            <td class="sub-label">Kode</td>
             @for($c=0; $c < $cols; $c++)
                 <td class="cell">{{ implode(', ', $thumblsData[$c]['bahan_lain'] ?? ['-']) }}</td>
             @endfor
         </tr>
 
-        {{-- ====== BAHAN YANG DITAMBAHKAN (3 sub kolom × N slot) ====== --}}
-        <tr>
-            <td class="sub-label">Bahan yang ditambahkan</td>
-            @for($i=0;$i<$cols;$i++)
-                <td class="cell mini" colspan="1">Kode</td>
+         <tr>
+            <td class="sub-label">Berat (kg) </td>
+            @for($c=0; $c < $cols; $c++)
+                <td class="cell">{{ implode(', ', $thumblsData[$c]['bahan_lain'] ?? ['-']) }}</td>
             @endfor
         </tr>
-        <tr>
-            <td class="sub-label"></td>
-            @for($i=0;$i<$cols;$i++)
-                <td class="cell mini">Berat (kg)</td>
-            @endfor
-        </tr>
-        <tr>
-            <td class="sub-label"></td>
-            @for($i=0;$i<$cols;$i++)
-                <td class="cell mini">Sensori</td>
-            @endfor
-        </tr>
-        {{-- Populating Bahan yang ditambahkan --}}
-        @for($r=0; $r < 3; $r++) {{-- Assuming max 3 rows for bahan_lain per batch for simplicity --}}
-            <tr>
-                <td class="sub-label"></td>
-                @for($c=0; $c < $cols; $c++)
-                    @php
-                        $bahanLain = $thumblsData[$c]['bahan_lain'][$r] ?? null;
-                    @endphp
-                    <td class="cell mini">{{ $bahanLain['kode'] ?? '-' }}</td>
-                    <td class="cell mini">{{ $bahanLain['berat'] ?? '-' }}</td>
-                    <td class="cell mini">-</td> {{-- No direct mapping for Sensori --}}
-                @endfor
-            </tr>
-        @endfor
 
+        <tr>
+            <td class="sub-label">Bahan lain yang ditambahkan </td>
+            @for($c=0; $c < $cols; $c++)
+                <td class="cell">{{ implode(', ', $thumblsData[$c]['bahan_lain'] ?? ['-']) }}</td>
+            @endfor
+        </tr>
 
         {{-- ====== AIR (ICE) ====== --}}
         <tr><td colspan="{{ $cols+1 }}" class="section">AIR (ICE)</td></tr>

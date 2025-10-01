@@ -40,6 +40,7 @@
     .note .heading { font-weight:700; margin-bottom:2px; }
 
     .catatan { margin-top:6px; font-size:10px; }
+    .catatan ul{margin:0; padding-left: 16px;}
     .line { border-bottom:1px solid #000; height:16px; }
 
     .sign { margin-top:16mm; width:100%; }
@@ -48,7 +49,7 @@
     .sign .line-sign { height:0; border-bottom:1px solid #000; margin:18mm 0 3px; }
     .role { font-size:10px; }
 
-    .doc-code { position: fixed; right:14mm; bottom:30mm; font-size:9px; }
+    .doc-code { font-size:9px; font-style: italic; text-align: right;}
 </style>
 </head>
 <body>
@@ -98,10 +99,18 @@
         </tbody>
     </table>
 
-    <div class="doc-code">{{ $doc_code }}</div>
+    <div class="doc-code">QR 27/00</div>
 
-    <div class="catatan" style="margin-top:10px;">Catatan:</div>
-    <div class="line"></div>
+    <div class="catatan">
+        Catatan:
+        <div>
+            <ul>
+                @foreach($data as $index => $item)
+                    <li>{{ $item->catatan ?? '-' }}</li>
+                @endforeach 
+            </ul>
+        </div>
+    </div>
 
     <table class="sign">
         <tr>

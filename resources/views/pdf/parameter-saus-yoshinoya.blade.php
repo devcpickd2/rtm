@@ -56,7 +56,7 @@
     .bf2-col   { width:34mm; text-align:center; }
 
     .spec { color:#b10000; font-weight:700; }
-    .doc-code { position: fixed; right: 12mm; bottom: 28mm; font-size:9px; }
+    .doc-code { font-size:9px; font-style: italic; text-align: right; }
 
     .footer { margin-top: 8mm; width:100%; }
     .footer td { vertical-align:bottom; text-align:center; }
@@ -73,10 +73,7 @@
 
     <table class="meta">
         <tr>
-            <td class="label">Zona :</td><td style="width:35%">{{ $zona }}</td>
             <td class="label">Shift :</td><td>{{ $shift }}</td>
-        </tr>
-        <tr>
             <td class="label">Saus :</td><td colspan="3">{{ $saus }}</td>
         </tr>
     </table>
@@ -84,29 +81,34 @@
     <table class="grid">
         <thead>
             <tr>
-                <th class="tgl-col">TANGGAL PRODUKSI</th>
+                <th class="tgl-col" rowspan="3">TANGGAL PRODUKSI</th>
                 <th class="kode-col">KODE PRODUKSI</th>
-                <th class="suhu-col">SUHU PENGISIAN (°C)</th>
+                <th class="suhu-col">SUHU PENGUKURAN (⁰C)</th>
                 <th class="brix-col">BRIX (%)</th>
                 <th class="salt-col">SALT (%)</th>
-                <th class="visc-col">VISCOSITAS (cP)</th>
-                <th class="bf1-col">{{ $bf1_label }}</th>
-                <th class="bf2-col">{{ $bf2_label }}</th>
+                <th class="visc-col">VISCOSITAS (detik.milidetik)</th>
+                <th class="bf1-col">Brookfield LV, S 64,. 30 % RPM  suhu saus 24 - 26 °C</th>
+                <th class="bf2-col">Brookfield LV, S 64,. 30 % RPM (Setelah Frozen) suhu saus 24 - 26 °C</th>
+            </tr>
+            <tr>
+                <th>Vegetable</th>
+                <th rowspan="2">24 - 26</th>
+                <th>'6 - 12</th>
+                <th>'6 - 12</th>
+                <th>20 - 50</th>
+                <th>1000 - 3000 Cp</th>
+                <th>1000 - 3000 Cp</th>
+            </tr>
+            <tr>
+                <th>Teriyaki</th>
+                <th>'33 - 38</th>
+                <th>'14 - 17</th>
+                <th>70 - 130</th>
+                <th>3000 - 5000 Cp</th>
+                <th>2500 - 3000 Cp</th>
             </tr>
         </thead>
         <tbody>
-            {{-- Baris spesifikasi/target (merah) --}}
-            <tr>
-                <td class="spec" style="text-align:center;">Spesifikasi</td>
-                <td></td>
-                <td class="spec">{{ $specs['suhu'] ?? '' }}</td>
-                <td class="spec">{{ $specs['brix'] ?? '' }}</td>
-                <td class="spec">{{ $specs['salt'] ?? '' }}</td>
-                <td class="spec">{{ $specs['viscositas'] ?? '' }}</td>
-                <td class="spec">{{ $specs['bf1'] ?? '' }}</td>
-                <td class="spec">{{ $specs['bf2'] ?? '' }}</td>
-            </tr>
-
             {{-- Baris input --}}
             @forelse ($data as $index => $item)
                 <tr>
@@ -127,6 +129,8 @@
         </tbody>
     </table>
 
+    <div class="doc-code">QR 24/00</div>
+
     <div class="catatan">
         Catatan:
         <div class="line"></div>
@@ -143,6 +147,6 @@
         </tr>
     </table>
 
-    <div class="doc-code">{{ $doc_code }}</div>
+    
 </body>
 </html>

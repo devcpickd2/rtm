@@ -4,7 +4,6 @@
     $doc_code   = $doc_code   ?? 'QR-3101';
     $tanggal    = $tanggal    ?? now()->format('d/m/Y');
     $data       = $data       ?? collect(); // Ensure $data is a collection
-    $shift      = $data->isNotEmpty() ? $data->first()->shift : '-';
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -42,6 +41,7 @@
         .note li { margin: 2px 0; }
 
         .catatan { margin-top: 5px; font-size: 10px; }
+        .catatan ul{margin:0; padding-left: 16px;}
         .line { border-bottom: 1px solid #000; height: 16px; }
 
         .sign { margin-top: 18mm; width: 100%; text-align: center; font-size: 11px; }
@@ -50,7 +50,7 @@
         .sign .line-sign { border-bottom: 1px solid #000; height: 0; margin: 20mm 0 3px; }
         .sign .role { font-size: 10px; }
 
-        .doc-code { position: fixed; right: 15mm; bottom: 10mm; font-size: 9px; }
+        .doc-code { font-size: 9px; font-style: italic;text-align: right;}
     </style>
 </head>
 <body>
@@ -110,6 +110,7 @@
         @endforelse
         </tbody>
     </table>
+    <div class="doc-code">QR 31/01</div>
 
     <div class="note">
         <div class="heading">Keterangan:</div>
@@ -121,7 +122,13 @@
 
     <div class="catatan">
         <div>Catatan:</div>
-        <div class="line"></div>
+        <div>
+            <ul>
+                @foreach($data as $index => $item)
+                    <li>{{ $item->catatan ?? '-' }}</li>
+                @endforeach 
+            </ul>
+        </div>
     </div>
 
     <table class="sign">
@@ -144,6 +151,6 @@
         </tr>
     </table>
 
-    <div class="doc-code">{{ $doc_code }}</div>
+    
 </body>
 </html>

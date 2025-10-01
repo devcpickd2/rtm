@@ -132,11 +132,16 @@ class InstitusiController extends Controller
         }
 
         $data = Institusi::whereDate('date', $exportDate)->get();
+        $shift = Institusi::whereDate('date', $exportDate)
+            ->select('shift')
+            ->distinct()
+            ->pluck('shift')
+            ->implode(',');
 
         return Pdf::view('pdf.verifikasi-produk-institusi', [
             'tanggal'  => Carbon::parse($exportDate)->format('d/m/Y'),
             'data'     => $data,
-            'shift'    => $data->isNotEmpty() ? $data->first()->shift : '-',
+            'shift'    => $shift,
             'doc_code' => 'QR-3101',
         ])
         ->format('a4')

@@ -40,6 +40,7 @@
     .note li { margin: 2px 0; }
 
     .catatan { margin-top: 6px; font-size: 10px; }
+    .catatan ul{margin:0; padding-left: 16px;}
     .line { border-bottom: 1px solid #000; height: 16px; }
 
     .footer-area { width: 100%; margin-top: 14mm; }
@@ -48,7 +49,7 @@
     .sign { height: 18mm; border-bottom: 1px solid #000; margin-bottom: 3px; }
     .role { font-size: 10px; text-align: center; }
 
-    .doc-code { position: fixed; right: 14mm; bottom: 18mm; font-size: 9px; }
+    .doc-code { font-size: 9px; font-style: italic;text-align: right;}
 </style>
 </head>
 <body>
@@ -67,18 +68,21 @@
     <table class="grid">
         <thead>
             <tr>
-                <th class="kode-col">KODE TERMOMETER / AREA</th>
-                <th class="std-col">STANDAR<br>(0,0 °C)</th>
+                <th class="kode-col" rowspan="2">KODE TERMOMETER / AREA</th>
+                <th class="std-col" rowspan="2">STANDAR</th>
+                <th colspan="2">PENERAAN</th>
+                <th class="tindak-col" rowspan="2">TINDAKAN KOREKSI</th>
+            </tr>
+            <tr>
                 <th class="pukul-col">PUKUL</th>
                 <th class="hasil-col">HASIL TERA</th>
-                <th class="tindak-col">TINDAKAN KOREKSI</th>
             </tr>
         </thead>
         <tbody>
         @forelse ($data as $index => $item)
             <tr>
                 <td>{{ $item->kode_thermometer }} / {{ $item->area }}</td>
-                <td class="std-col">{{ $item->standar }}</td>
+                <td class="std-col">(0,0 °C)</td>
                 <td class="pukul-col">{{ $item->waktu_tera }}</td>
                 <td class="hasil-col">{{ $item->hasil_tera }}</td>
                 <td>{{ $item->tindakan_koreksi }}</td>
@@ -90,37 +94,50 @@
         @endforelse
         </tbody>
     </table>
-
-    <div class="note">
-        <div class="heading">Keterangan :</div>
-        <ul>
-            <li>Tera termometer dilakukan di setiap awal produksi</li>
-            <li>Termometer ditera dengan memasukkan sensor di es (0 °C)</li>
-            <li>Jika ada selisih angka display suhu dengan suhu standar es, beri keterangan (+) atau (-) angka selisih (faktor koreksi)</li>
-            <li>Jika faktor koreksi &gt; 0,4 °C, termometer perlu perbaikan</li>
-        </ul>
-    </div>
-
-    <div class="catatan">
-        <div>Catatan:</div>
-        <div class="line"></div>
-    </div>
-
-    <table class="footer-area">
+    <div class="doc-code">QR 04 / 01</div>
+    <table>
         <tr>
-            <td style="width:50%"></td>
-            <td>Diperiksa oleh,</td>
-            <td style="width:20mm"></td>
-            <td>Disetujui oleh,</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><div class="sign"></div><div class="role">QC</div></td>
-            <td></td>
-            <td><div class="sign"></div><div class="role">SPV QC</div></td>
+            <td style="width:60%">
+                <div class="note">
+                    <div class="heading">Keterangan :</div>
+                    <ul>
+                        <li>Tera termometer dilakukan di setiap awal produksi</li>
+                        <li>Termometer ditera dengan memasukkan sensor di es (0 °C)</li>
+                        <li>Jika ada selisih angka display suhu dengan suhu standar es, beri keterangan (+) atau (-) angka selisih (faktor koreksi)</li>
+                        <li>Jika faktor koreksi &gt; 0,4 °C, termometer perlu perbaikan</li>
+                    </ul>
+                </div>
+
+                <div class="catatan">
+                    <div>Catatan:</div>
+                    <div>
+                        <ul>
+                        @foreach($data as $index => $item)
+                            <li>{{ $item->catatan ?? '-' }}</li>
+                        @endforeach 
+                        </ul>
+                    </div>
+                </div>
+            </td>
+            <td style="width:40%">
+                <table class="footer-area">
+                    <tr>
+                        <td></td>
+                        <td>Diperiksa oleh,</td>
+                        <td></td>
+                        <td>Disetujui oleh,</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><div class="sign"></div><div class="role">QC</div></td>
+                        <td></td>
+                        <td><div class="sign"></div><div class="role">SPV QC</div></td>
+                    </tr>
+                </table>
+            </td>
         </tr>
     </table>
 
-    <div class="doc-code">{{ $doc_code }}</div>
+    
 </body>
 </html>
